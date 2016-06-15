@@ -16107,8 +16107,14 @@ ED.Bleb = function(_drawing, _parameterJSON) {
 	// Set classname
 	this.className = "Bleb";
 
+	// Other parameters
+	this.leakage = "None";
+
 	// Saved parameters
-	this.savedParameterArray = ['rotation','arc'];
+	this.savedParameterArray = ['rotation','arc', 'leakage'];
+
+	// Parameters in doodle control bar (parameter name: parameter label)
+	this.controlParameterArray = {'leakage':'Leakage'};
 
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _parameterJSON);
@@ -16126,6 +16132,7 @@ ED.Bleb.superclass = ED.Doodle.prototype;
  */
 ED.Bleb.prototype.setHandles = function() {
 	this.handleArray[3] = new ED.Doodle.Handle(null, true, ED.Mode.Arc, false);
+	this.handleArray[4] = new ED.Doodle.Handle(null, true, ED.Mode.Apex, false);
 }
 
 /**
@@ -16138,6 +16145,17 @@ ED.Bleb.prototype.setPropertyDefaults = function() {
 
 	// Update component of validation array for simple parameters
 	this.parameterValidationArray['arc']['range'].setMinAndMax(Math.PI / 12, Math.PI / 2);
+	this.parameterValidationArray['apexX']['range'].setMinAndMax(-100, +100);
+	this.parameterValidationArray['apexY']['range'].setMinAndMax(-500, -380);
+
+	// Add complete validation arrays for derived parameters
+	this.parameterValidationArray['leakage'] = {
+		kind: 'derived',
+		type: 'string',
+		list: ['None', 'Minimal', 'Moderate', 'Brisk'],
+		animate: true
+	};
+
 }
 
 /**
@@ -16146,8 +16164,33 @@ ED.Bleb.prototype.setPropertyDefaults = function() {
 ED.Bleb.prototype.setParameterDefaults = function() {
 	this.setRotationWithDisplacements(30, 30);
 	this.arc = Math.PI/8;
+	this.apexY = -400;
+	this.setParameterFromString('leakage', 'None');
 }
 
+/**
+ * Calculates values of dependent parameters. This function embodies the relationship between simple and derived parameters
+ * The returned parameters are animated if the 'animate' property in the parameterValidationArray is set to true
+ *
+ * @param {String} _parameter Name of parameter that has changed
+ * @value {Undefined} _value Value of parameter to calculate
+ * @returns {Array} Associative array of values of dependent parameters
+ */
+ED.Bleb.prototype.dependentParameterValues = function(_parameter, _value) {
+	var returnArray = new Array();
+
+	switch (_parameter) {
+		case 'arc':
+				// Adjust limit of apexX according to size of bleb (represented by arc parameter)
+				var lx = 1.2 * 400 * Math.tan(_value/2);
+				this.parameterValidationArray['apexX']['range'].setMinAndMax(-lx, +lx);
+				var ly = 0.9 * 400 * Math.cos(_value/2);
+				this.parameterValidationArray['apexY']['range'].setMinAndMax(-500, -ly);
+			break;
+	}
+
+	return returnArray;
+}
 /**
  * Draws doodle or performs a hit test if a Point parameter is passed
  *
@@ -16234,10 +16277,64 @@ ED.Bleb.prototype.draw = function(_point) {
 		ctx.lineTo(50, -ri * 1.2);
 		ctx.lineTo(50, -ri);
 		ctx.stroke();
+
+		if (this.leakage != "None") {
+
+			// Size of triangular leakage area
+			var l;
+			switch (this.leakage) {
+				case 'Minimal':
+					l = 100;
+					break;
+				case 'Moderate':
+					l = 150;
+					break;
+				case 'Brisk':
+					l = 200;
+					break;
+			}
+
+			// Apex angle of leakage triangle
+			var phi = Math.PI/8;
+
+			// Apex and source of leakage
+			ctx.beginPath();
+			ctx.moveTo(this.apexX,this.apexY);
+
+			// Calculate position of points making up triangular area of leakage
+			var p1 = new ED.Point(0, 0);
+			p1.setWithPolars(-l, phi - this.rotation);
+			var p2 = new ED.Point(0, 0);
+			p2.setWithPolars(-l, -phi - this.rotation);
+
+			// Radius of tear drop
+			var r = p1.distanceTo(p2)/2
+
+			// Centre of tear drop
+			var p3 = new ED.Point(0, 0);
+			p3.setWithPolars(-l, -this.rotation);
+
+			// Complete path
+			ctx.lineTo(this.apexX + p1.x, this.apexY + p1.y);
+			ctx.arc(this.apexX + p3.x, this.apexY + p3.y, r, Math.PI - this.rotation, 2 * Math.PI - this.rotation, true);
+			ctx.lineTo(this.apexX + p2.x, this.apexY + p2.y);
+			ctx.closePath();
+
+			// Fill it
+			ctx.fillStyle = "rgba(0, 255, 0, 0.75)";
+			ctx.fill();
+
+		}
 	}
 
 	// Coordinates of handles (in canvas plane)
 	this.handleArray[3].location = this.transform.transformPoint(new ED.Point(handleRightX, handleRightY));
+	if (this.leakage != "None") {
+		this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
+	}
+	else {
+		this.handleArray[4].location = this.transform.transformPoint(new ED.Point(-600, -600));
+	}
 
 	// Draw handles if selected
 	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point)
@@ -16252,7 +16349,10 @@ ED.Bleb.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Bleb.prototype.description = function() {
-	return "Trabeculectomy bleb at " + this.clockHour() + " o'clock";;
+	var returnString = "Trabeculectomy bleb at " + this.clockHour() + " o'clock";
+	if (this.leakage != "None") { returnString += " with " + this.leakage.toLowerCase() + " leakage"; }
+
+	return returnString;
 }
 
 /**
