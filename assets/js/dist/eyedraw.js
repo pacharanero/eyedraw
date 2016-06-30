@@ -766,6 +766,7 @@ ED.Drawing.prototype.loadDoodles = function(_id) {
  */
 ED.Drawing.prototype.load = function(_doodleSet) {
 	// Iterate through set of doodles and load into doodle array
+
 	for (var i = 0; i < _doodleSet.length; i++) {
 		// Check that class definition exists, otherwise skip it
 		if (ED[_doodleSet[i].subclass] === undefined) {
@@ -783,6 +784,39 @@ ED.Drawing.prototype.load = function(_doodleSet) {
 		return a.order - b.order
 	});
 }
+
+/**
+ * Loads doodles from passed set in JSON format into doodleArray
+ *
+ * @param {Set} _doodleSet Set of doodles from server
+ */
+ED.Drawing.prototype.loadAdditional = function(_doodleSet) {
+	// Iterate through set of doodles and load into doodle array
+	if (!_doodleSet.length) {
+		_doodleSet = [_doodleSet];
+	}
+	var initialIndex = this.doodleArray.length;
+
+	for (var i = 0; i < _doodleSet.length; i++) {
+		// Check that class definition exists, otherwise skip it
+		if (ED[_doodleSet[i].subclass] === undefined) {
+			ED.errorHandler('ED.Drawing', 'load', 'Unrecognised doodle: ' + _doodleSet[i].subclass);
+			break;
+		}
+
+		// Instantiate a new doodle object with parameters from doodle set
+		this.doodleArray[initialIndex + i] = new ED[_doodleSet[i].subclass](this, _doodleSet[i]);
+		this.doodleArray[initialIndex + i].id = initialIndex + i;
+	}
+
+	// Sort array by order (puts back doodle first)
+	this.doodleArray.sort(function(a, b) {
+		return a.order - b.order
+	});
+
+	this.drawAllDoodles();
+};
+
 
 /**
  * Creates string containing drawing data in JSON format with surrounding square brackets
@@ -2682,7 +2716,7 @@ ED.Drawing.prototype.numberOfDoodlesOfClass = function(_className) {
  */
 ED.Drawing.prototype.firstDoodleOfClass = function(_className) {
 	var returnValue = false;
-
+	
 	// Go through doodle array looking for doodles of passed className
 	for (var i = 0; i < this.doodleArray.length; i++) {
 		if (this.doodleArray[i].className == _className) {
