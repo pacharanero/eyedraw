@@ -554,6 +554,8 @@ ED.Drawing.prototype.loadAdditional = function(_doodleSet) {
 		return a.order - b.order
 	});
 
+	this.notify("doodlesLoaded");
+	
 	this.drawAllDoodles();
 };
 
