@@ -58,8 +58,8 @@ ED.RRD.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 
 	// Update component of validation array for simple parameters
-// 	this.parameterValidationArray['scaleX']['range'].setMinAndMax(+1, +4);
-// 	this.parameterValidationArray['scaleY']['range'].setMinAndMax(+1, +4);
+//	this.parameterValidationArray['scaleX']['range'].setMinAndMax(+1, +4);
+//	this.parameterValidationArray['scaleY']['range'].setMinAndMax(+1, +4);
 	this.parameterValidationArray['apexX']['range'].setMinAndMax(-0, +0);
 	this.parameterValidationArray['apexY']['range'].setMinAndMax(-400, +400);
 }
@@ -198,6 +198,13 @@ ED.RRD.prototype.diagnosticHierarchy = function() {
  * @returns {Bool} True if macula is off
  */
 ED.RRD.prototype.isMacOff = function() {
+
+	// Return value
+	var returnValue = false;
+
+	// Save context since draw function alters it
+	this.drawing.context.save();
+
 	// Get coordinates of macula in doodle plane
 	if (this.drawing.eye == ED.eye.Right) {
 		var macula = new ED.Point(-100, 0);
@@ -209,6 +216,16 @@ ED.RRD.prototype.isMacOff = function() {
 	var maculaCanvas = this.drawing.transform.transformPoint(macula);
 
 	// Determine whether macula is off or not
-	if (this.draw(maculaCanvas)) return true;
-	else return false;
+	if (this.draw(maculaCanvas)) {
+	  returnValue = true;
+	}
+	else {
+	  returnValue =	false;
+	}
+
+  // Restore context
+	this.drawing.context.restore();
+
+	// Return value
+	return returnValue
 }
