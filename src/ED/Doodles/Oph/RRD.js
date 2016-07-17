@@ -58,8 +58,6 @@ ED.RRD.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 
 	// Update component of validation array for simple parameters
-//	this.parameterValidationArray['scaleX']['range'].setMinAndMax(+1, +4);
-//	this.parameterValidationArray['scaleY']['range'].setMinAndMax(+1, +4);
 	this.parameterValidationArray['apexX']['range'].setMinAndMax(-0, +0);
 	this.parameterValidationArray['apexY']['range'].setMinAndMax(-400, +400);
 }
@@ -217,13 +215,13 @@ ED.RRD.prototype.isMacOff = function() {
 
 	// Determine whether macula is off or not
 	if (this.draw(maculaCanvas)) {
-	  returnValue = true;
+		returnValue = true;
 	}
 	else {
-	  returnValue =	false;
+		returnValue =	false;
 	}
 
-  // Restore context
+  	// Restore context
 	this.drawing.context.restore();
 
 	// Return value
