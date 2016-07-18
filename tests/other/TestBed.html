@@ -87,7 +87,7 @@
 							this.drawing.globalScaleFactor = this.gsf;
 
 							//this.drawing.addDoodle('AxialLengthGraph', {'axialLength':'25'});
-							this.drawing.addDoodle('Fundus', {'pupilSize':'Medium'});
+							//this.drawing.addDoodle('Fundus', {'pupilSize':'Medium'});
 							//this.drawing.addDoodle('Patient', {}, {recliningAngle:{id:'recliningAngleInput'}});
 							//this.drawing.addDoodle('TrialLens', {}, {axis:{id:'axis'}});
 							//this.drawing.addDoodle('ToricPCIOL', {}, {axis:{id:'axis'}});
@@ -96,8 +96,8 @@
 							//this.drawing.addDoodle('DrainageRetinotomy');
 							//this.drawing.addDoodle('DendriticUlcer');
 							//this.drawing.addDoodle('Episcleritis');
-							this.drawing.addDoodle('UTear');
-							this.drawing.addDoodle('Buckle');
+							this.drawing.addDoodle('Chart');
+							this.drawing.addDoodle('Restoration');
 
 							//debugger;
 							//this.drawing.addDoodle('SMILE');
@@ -410,14 +410,14 @@
             <button id="LensRPS" class="ed-button" title="IOL" onclick="drawingEdit.addDoodle('IOL'); return false;" ><img src="../../assets/img/old/IOL.gif" /></button>
             <button id="LensRPS" class="ed-button" title="ArcuateKeratotomy" onclick="drawingEdit.addDoodle('ArcuateKeratotomy'); return false;" ><img src="../../assets/img/old/ArcuateKeratotomy.gif" /></button>
             <button id="LensRPS" class="ed-button" title="Supramid" onclick="drawingEdit.addDoodle('CornealGraftSuture'); return false;" ><img src="../../assets/img/old/CornealSuture.gif" /></button>
-            <button id="LensRPS" class="ed-button" title="Pterygium" onclick="drawingEdit.addDoodle('Cycloablation'); return false;" ><img src="../../assets/img/old/Cycloablation.gif" /></button>
+            <button id="LensRPS" class="ed-button" title="Pterygium" onclick="drawingEdit.addDoodle('Restoration'); return false;" ><img src="../../assets/img/old/Restoration.gif" /></button>
             <br />
         </div>
 
 		<!-- Canvas -->
 		<div style="position:relative;">
 			<span id="canvasTooltip"></span>
-			<canvas id="canvasEdit" class="ed-canvas" width="300" height="300" tabindex="1"></canvas>
+			<canvas id="canvasEdit" class="ed-canvas" width="500" height="300" tabindex="1"></canvas>
 			<!-- Doodle control panel -->
 			<div id="canvasEdit_controls" class="ed-doodle-popup" style="background-color: #DAE6F1; float:left; position:absolute; top:20px; left:310px;">
 			</div>
