@@ -29,13 +29,14 @@ ED.Cycloablation = function(_drawing, _parameterJSON) {
 	this.className = "Cycloablation";
 
 	// Other parameters
-	this.severity = 'Medium';
+	this.numberOfShots = +5;
+	this.power = 30;
 
 	// Saved parameters
-	this.savedParameterArray = ['arc', 'rotation', 'severity'];
+	this.savedParameterArray = ['arc', 'rotation', 'numberOfShots', 'power'];
 
 	// Parameters in doodle control bar (parameter name: parameter label)
-	this.controlParameterArray = {'severity':'Category'};
+	this.controlParameterArray = {'numberOfShots':"Shots", 'power':'Power'};
 
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _parameterJSON);
@@ -72,10 +73,18 @@ ED.Cycloablation.prototype.setPropertyDefaults = function() {
 	this.parameterValidationArray['radius']['range'].setMinAndMax(250, 450);
 
 	// Add complete validation arrays for other parameters
-	this.parameterValidationArray['severity'] = {
+	this.parameterValidationArray['numberOfShots'] = {
 		kind: 'other',
-		type: 'string',
-		list: ['Severe', 'Medium', 'Mild'],
+		type: 'int',
+		range: new ED.Range(1, 50),
+		precision: 1,
+		animate: false
+	};
+	this.parameterValidationArray['power'] = {
+		kind: 'other',
+		type: 'int',
+		range: new ED.Range(1, 50),
+		precision: 1,
 		animate: false
 	};
 }
@@ -93,8 +102,7 @@ ED.Cycloablation.prototype.setParameterDefaults = function() {
 	// Match subsequent properties
 	var doodle = this.drawing.lastDoodleOfClass(this.className);
 	if (doodle) {
-		this.arc = doodle.arc
-		this.severity = doodle.severity
+		this.arc = doodle.arc;
 	}
 }
 
@@ -152,20 +160,14 @@ ED.Cycloablation.prototype.draw = function(_point) {
 
 	// Non-boundary paths
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
-		// Total number of spots in a 360 arc
-		var t = 30;
-
-		// Number in the current arc and angular separation
-		var phi = 2 * Math.PI / t;
-		var n = Math.floor(this.arc / phi);
-
 		// Centre point of spot
 		var sp = new ED.Point(0, 0);
 
-		ctx.beginPath();
+		//ctx.beginPath();
 
 		// Spots
-		for (var i = 0; i < n; i++) {
+		var phi  = this.arc / this.numberOfShots;
+		for (var i = 0; i < this.numberOfShots; i++) {
 			var theta = Math.PI / 2 + arcEnd + i * phi;
 			sp.setWithPolars(r, theta);
 			this.drawSpot(ctx, sp.x, sp.y, 20, "red");
@@ -174,19 +176,19 @@ ED.Cycloablation.prototype.draw = function(_point) {
 		//ctx.strokeStyle = "red";
 
 		// Adjust thickness of line for severity
-		switch (this.severity) {
-			case 'Severe':
-				ctx.lineWidth = 16;
-				break;
-			case 'Medium':
-				ctx.lineWidth = 12;
-				break;
-			case 'Mild':
-				ctx.lineWidth = 8;
-				break;
-		}
+// 		switch (this.severity) {
+// 			case 'Severe':
+// 				ctx.lineWidth = 16;
+// 				break;
+// 			case 'Medium':
+// 				ctx.lineWidth = 12;
+// 				break;
+// 			case 'Mild':
+// 				ctx.lineWidth = 8;
+// 				break;
+// 		}
 
-		ctx.stroke();
+		//ctx.stroke();
 
 		// Demonstration blurred line
 		//this.drawSoftLine(-200, -200, 200, 200, 40, 255, 0, 0, 1);
@@ -209,7 +211,7 @@ ED.Cycloablation.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Cycloablation.prototype.groupDescription = function() {
-	var returnString = this.severity + " Cycloablation";
+	var returnString = " Cycloablation";
 
 	// Unless nearly complete, include quadrant
 	if (this.arc < 1.8 * Math.PI) {
