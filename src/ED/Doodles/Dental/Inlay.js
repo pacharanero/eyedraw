@@ -1,28 +1,28 @@
 /**
- * Restoration
+ * Inlay
  *
- * @class Restoration
+ * @class Inlay
  * @property {String} className Name of doodle subclass
  * @param {Drawing} _drawing
  * @param {Object} _parameterJSON
  */
-ED.Restoration = function(_drawing, _parameterJSON) {
+ED.Inlay = function(_drawing, _parameterJSON) {
 	// Set classname
-	this.className = "Restoration";
+	this.className = "Inlay";
 
 	// Internal parameters
 	this.boxDimension = +200;
 	this.showPopup = true;
 
 	// Derived parameters
-	this.position = 'Occlusal';
+	this.type = 'Temporary';
 
 	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY', 'position'];
+	this.savedParameterArray = ['originX', 'originY', 'type'];
 
 	// Parameters in doodle control bar (parameter name: parameter label)
 	this.controlParameterArray = {
-		'position':'Position',
+		'type':'Type',
 	};
 
 	// Call superclass constructor
@@ -32,21 +32,32 @@ ED.Restoration = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Restoration.prototype = new ED.Doodle;
-ED.Restoration.prototype.constructor = ED.Restoration;
-ED.Restoration.superclass = ED.Doodle.prototype;
+ED.Inlay.prototype = new ED.Doodle;
+ED.Inlay.prototype.constructor = ED.Inlay;
+ED.Inlay.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.Inlay.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
 
 /**
  * Sets default dragging attributes
  */
-ED.Restoration.prototype.setPropertyDefaults = function() {
+ED.Inlay.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
 
-	this.parameterValidationArray['position'] = {
+	// Array of angles to snap to
+// 	var phi = Math.PI / 2;
+// 	this.anglesArray = [0, 1 * phi, 2 * phi, 3 * phi];
+
+	this.parameterValidationArray['type'] = {
 		kind: 'derived',
 		type: 'string',
-		list: ['Palatal', 'Occlusal', 'Buccal'],
+		list: ['Temporary', 'Porcelain', 'Gold'],
 		animate: false
 	};
 }
@@ -54,7 +65,7 @@ ED.Restoration.prototype.setPropertyDefaults = function() {
 /**
  * Sets default parameters
  */
-ED.Restoration.prototype.setParameterDefaults = function() {
+ED.Inlay.prototype.setParameterDefaults = function() {
 	// Get last added doodle
 	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
 
@@ -82,12 +93,12 @@ ED.Restoration.prototype.setParameterDefaults = function() {
  *
  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
  */
-ED.Restoration.prototype.draw = function(_point) {
+ED.Inlay.prototype.draw = function(_point) {
 	// Get context
 	var ctx = this.drawing.context;
 
 	// Call draw method in superclass
-	ED.Restoration.superclass.draw.call(this, _point);
+	ED.Inlay.superclass.draw.call(this, _point);
 
 	// Boundary path
 	ctx.beginPath();
@@ -107,21 +118,56 @@ ED.Restoration.prototype.draw = function(_point) {
 
 	// Non-boundary paths
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
-		var y = 0;
-		switch (this.position) {
-				case 'Palatal':
-					y = -9*d/24;
-					break;
-				case 'Occlusal':
-					y = 0;
-					break;
-				case 'Buccal':
-					y = 9*d/24;
-					break;
-			}
+		ctx.beginPath();
 
-		this.drawSpot(ctx, 0, y, 14, "red");
+		// Curve
+		ctx.moveTo(-d/2, -d/3);
+		ctx.bezierCurveTo(-d/3, 0, 0, -d/4, 0, 0);
+		ctx.bezierCurveTo(0, +d/4, -d/3, 0, -d/2, +d/3);
+
+		// Hashed lines
+		var b = d/9;
+		ctx.moveTo(-4 * b, -2.1 * b);
+		ctx.lineTo(-4 * b, +2.1 * b);
+		ctx.moveTo(-3 * b, -1.55 * b);
+		ctx.lineTo(-3 * b, +1.55 * b);
+		ctx.moveTo(-2 * b, -1.2 * b);
+		ctx.lineTo(-2 * b, +1.2 * b);
+		ctx.moveTo(-1 * b, -1.1 * b);
+		ctx.lineTo(-1 * b, +1.1 * b);
+
+		// Stroke
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 6;
+		ctx.stroke();
+
+		// Text
+		var label = "";
+		switch (this.type) {
+			case 'Temporary':
+				label = "TEMP";
+				break;
+			case 'Porcelain':
+				label = "PL";
+				break;
+			case 'Gold':
+				label = "GL";
+				break;
+		}
+		ctx.font = "32px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
 	}
+
+
+	// Coordinates of handles (in canvas plane)
+	var point = new ED.Point(0, 0)
+	point.setWithPolars(d/1.414, 7 * Math.PI / 4);
+	this.handleArray[2].location = this.transform.transformPoint(point);
+
+	// Draw handles if selected
+	//if (this.isSelected && !this.isForDrawing) this.drawHandles(_point)
 
 	// Return value indicating successful hittest
 	return this.isClicked;

@@ -28,6 +28,15 @@ ED.Chart = function(_drawing, _parameterJSON) {
 	// Set classname
 	this.className = "Chart";
 
+	// Internal parameters
+	this.boxNumber = 16;
+	this.boxDimension = +200;
+	this.numDimension = 2/3 * this.boxDimension;
+	this.showPopup = false;
+
+	// Other variables
+	this.boxArray = [];
+
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _parameterJSON);
 }
@@ -47,6 +56,18 @@ ED.Chart.prototype.setPropertyDefaults = function() {
 	this.isDeletable = false;
 	this.isFilled = false;
 	this.showsToolTip = false;
+
+	var xo = - (this.boxDimension * (this.boxNumber - 1)) / 2;
+	var yo = (- this.boxDimension - this.numDimension)/2;
+	for (var i = 0; i < this.boxNumber; i++) {
+		this.boxArray[i] = {point: new ED.Point(xo, yo), occupied: false};
+		xo = xo + this.boxDimension;
+	}
+	yo = yo + this.boxDimension + this.numDimension;
+	for (var i = this.boxNumber; i < 2 * this.boxNumber; i++) {
+		xo = xo - this.boxDimension;
+		this.boxArray[i] = {point: new ED.Point(xo, yo), occupied: false};
+	}
 }
 
 /**
@@ -65,10 +86,8 @@ ED.Chart.prototype.draw = function(_point) {
 	ctx.beginPath();
 
 	// Boundary
-	var d = 200;
-	var n = 5;
-	ctx.rect(-(d * n)/2, -d/2, d * n, d);
-	var lt = 6;
+	var height = 2 * this.boxDimension + this.numDimension;
+	ctx.rect(-(this.boxDimension * this.boxNumber)/2, -height/2, this.boxDimension * this.boxNumber, height);
 
 	// Close path
 	ctx.closePath();
@@ -85,39 +104,112 @@ ED.Chart.prototype.draw = function(_point) {
 
 		ctx.beginPath();
 
-		for (var i = 0; i < n; i++) {
-			var xo = -(d * n)/2 + lt/2 + i * d;
-			var yo = -d/2 + lt/2;
-			ctx.rect(xo, yo, d - lt, d - lt);
-			if (true) {
-				var pr = 4;
-				var xi = xo + d/pr;
-				var yi = yo + d/pr;
-
-				var di = d - 2 * d/pr - lt;
-				ctx.lineTo(xi, yi);
-				ctx.lineTo(xi, yi + di);
-				ctx.lineTo(xo, yo + d - lt);
-
-				ctx.moveTo(xi, yi + di);
-				ctx.lineTo(xi + di, yi + di);
-				ctx.lineTo(xo + d - lt, yo + d - lt);
-
-				ctx.moveTo(xi + di, yi + di);
-				ctx.lineTo(xi + di, yi);
-				ctx.lineTo(xo + d - lt, yo);
-
-				ctx.moveTo(xi + di, yi);
-				ctx.lineTo(xi, yi);
-			}
+		// First row
+		var xo = - (this.boxDimension * this.boxNumber) / 2;
+		var yo = - height/2;
+		for (var i = 0; i < 5; i++) {
+			this.drawBox(xo, yo, 'Adult', '');
+			xo = xo + this.boxDimension;
+		}
+		for (i = 0; i < 6; i++) {
+			this.drawBox(xo, yo, 'Child', '');
+			xo = xo + this.boxDimension;
+		}
+		for (i = 0; i < 5; i++) {
+			this.drawBox(xo, yo, 'Adult', '');
+			xo = xo + this.boxDimension;
 		}
 
-		ctx.lineWidth = lt;
-		ctx.strokeStyle = "gray";
+		// Second row
+		xo = - (this.boxDimension * this.boxNumber) / 2;
+		yo = - height/2 + this.boxDimension;
+		for (i = 0; i < 8; i++) {
+			this.drawBox(xo, yo, 'Number', (8 - i).toString());
+			xo = xo + this.boxDimension;
+		}
+		for (i = 0; i < 8; i++) {
+			this.drawBox(xo, yo, 'Number', (i + 1).toString());
+			xo = xo + this.boxDimension;
+		}
 
-		ctx.stroke();
+		// Third row
+		xo = - (this.boxDimension * this.boxNumber) / 2;
+		yo = - height/2 + this.boxDimension + this.numDimension;
+		for (var i = 0; i < 5; i++) {
+			this.drawBox(xo, yo, 'Adult', '');
+			xo = xo + this.boxDimension;
+		}
+		for (i = 0; i < 6; i++) {
+			this.drawBox(xo, yo, 'Child', '');
+			xo = xo + this.boxDimension;
+		}
+		for (i = 0; i < 5; i++) {
+			this.drawBox(xo, yo, 'Adult', '');
+			xo = xo + this.boxDimension;
+		}
+
 	}
 
 	// Return value indicating successful hittest
 	return this.isClicked;
+}
+
+ED.Chart.prototype.drawBox = function(_xo, _yo, _type, _label) {
+	var ctx = this.drawing.context;
+
+	// Line colour and size
+	ctx.lineWidth = 4;
+	ctx.strokeStyle = "gray";
+
+	// Start path
+	ctx.beginPath();
+
+	// Inner structure
+	switch (_type) {
+		case 'Adult':
+			ctx.rect(_xo, _yo, this.boxDimension, this.boxDimension);
+			var pr = 4;
+			var xi = _xo + this.boxDimension/pr;
+			var yi = _yo + this.boxDimension/pr;
+
+			var di = this.boxDimension - 2 * this.boxDimension/pr;
+			ctx.lineTo(xi, yi);
+			ctx.lineTo(xi, yi + di);
+			ctx.lineTo(_xo, _yo + this.boxDimension);
+			ctx.moveTo(xi, yi + di);
+			ctx.lineTo(xi + di, yi + di);
+			ctx.lineTo(_xo + this.boxDimension, _yo + this.boxDimension);
+			ctx.moveTo(xi + di, yi + di);
+			ctx.lineTo(xi + di, yi);
+			ctx.lineTo(_xo + this.boxDimension, _yo);
+			ctx.moveTo(xi + di, yi);
+			ctx.lineTo(xi, yi);
+			ctx.stroke();
+			break;
+
+		case 'Child':
+			ctx.rect(_xo, _yo, this.boxDimension, this.boxDimension);
+			var pr = 4;
+			var xi = _xo + this.boxDimension/pr;
+			var yi = _yo + this.boxDimension/2;
+			ctx.lineTo(xi, yi);
+			ctx.lineTo(_xo, _yo + this.boxDimension);
+			ctx.moveTo(xi, yi);
+			ctx.lineTo(_xo + this.boxDimension - this.boxDimension/pr, yi);
+			ctx.lineTo(_xo + this.boxDimension, _yo);
+			ctx.moveTo(_xo + this.boxDimension - this.boxDimension/pr, yi);
+			ctx.lineTo(_xo + this.boxDimension, _yo + this.boxDimension);
+			ctx.stroke();
+			break;
+
+		case 'Number':
+			ctx.rect(_xo, _yo, this.boxDimension, this.numDimension);
+			ctx.stroke();
+			ctx.font = "64px sans-serif";
+			var textWidth = ctx.measureText(_label).width;
+			ctx.fillStyle = "gray"
+			ctx.fillText(_label, _xo + this.boxDimension/2 - textWidth / 2, _yo + this.boxDimension/2 - 10);
+			break;
+	}
+
 }

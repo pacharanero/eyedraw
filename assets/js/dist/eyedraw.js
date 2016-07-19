@@ -12296,6 +12296,15 @@ ED.Chart = function(_drawing, _parameterJSON) {
 	// Set classname
 	this.className = "Chart";
 
+	// Internal parameters
+	this.boxNumber = 16;
+	this.boxDimension = +200;
+	this.numDimension = 2/3 * this.boxDimension;
+	this.showPopup = false;
+
+	// Other variables
+	this.boxArray = [];
+
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _parameterJSON);
 }
@@ -12315,6 +12324,18 @@ ED.Chart.prototype.setPropertyDefaults = function() {
 	this.isDeletable = false;
 	this.isFilled = false;
 	this.showsToolTip = false;
+
+	var xo = - (this.boxDimension * (this.boxNumber - 1)) / 2;
+	var yo = (- this.boxDimension - this.numDimension)/2;
+	for (var i = 0; i < this.boxNumber; i++) {
+		this.boxArray[i] = {point: new ED.Point(xo, yo), occupied: false};
+		xo = xo + this.boxDimension;
+	}
+	yo = yo + this.boxDimension + this.numDimension;
+	for (var i = this.boxNumber; i < 2 * this.boxNumber; i++) {
+		xo = xo - this.boxDimension;
+		this.boxArray[i] = {point: new ED.Point(xo, yo), occupied: false};
+	}
 }
 
 /**
@@ -12333,10 +12354,8 @@ ED.Chart.prototype.draw = function(_point) {
 	ctx.beginPath();
 
 	// Boundary
-	var d = 200;
-	var n = 5;
-	ctx.rect(-(d * n)/2, -d/2, d * n, d);
-	var lt = 6;
+	var height = 2 * this.boxDimension + this.numDimension;
+	ctx.rect(-(this.boxDimension * this.boxNumber)/2, -height/2, this.boxDimension * this.boxNumber, height);
 
 	// Close path
 	ctx.closePath();
@@ -12353,37 +12372,511 @@ ED.Chart.prototype.draw = function(_point) {
 
 		ctx.beginPath();
 
-		for (var i = 0; i < n; i++) {
-			var xo = -(d * n)/2 + lt/2 + i * d;
-			var yo = -d/2 + lt/2;
-			ctx.rect(xo, yo, d - lt, d - lt);
-			if (true) {
-				var pr = 4;
-				var xi = xo + d/pr;
-				var yi = yo + d/pr;
-
-				var di = d - 2 * d/pr - lt;
-				ctx.lineTo(xi, yi);
-				ctx.lineTo(xi, yi + di);
-				ctx.lineTo(xo, yo + d - lt);
-
-				ctx.moveTo(xi, yi + di);
-				ctx.lineTo(xi + di, yi + di);
-				ctx.lineTo(xo + d - lt, yo + d - lt);
-
-				ctx.moveTo(xi + di, yi + di);
-				ctx.lineTo(xi + di, yi);
-				ctx.lineTo(xo + d - lt, yo);
-
-				ctx.moveTo(xi + di, yi);
-				ctx.lineTo(xi, yi);
-			}
+		// First row
+		var xo = - (this.boxDimension * this.boxNumber) / 2;
+		var yo = - height/2;
+		for (var i = 0; i < 5; i++) {
+			this.drawBox(xo, yo, 'Adult', '');
+			xo = xo + this.boxDimension;
+		}
+		for (i = 0; i < 6; i++) {
+			this.drawBox(xo, yo, 'Child', '');
+			xo = xo + this.boxDimension;
+		}
+		for (i = 0; i < 5; i++) {
+			this.drawBox(xo, yo, 'Adult', '');
+			xo = xo + this.boxDimension;
 		}
 
-		ctx.lineWidth = lt;
-		ctx.strokeStyle = "gray";
+		// Second row
+		xo = - (this.boxDimension * this.boxNumber) / 2;
+		yo = - height/2 + this.boxDimension;
+		for (i = 0; i < 8; i++) {
+			this.drawBox(xo, yo, 'Number', (8 - i).toString());
+			xo = xo + this.boxDimension;
+		}
+		for (i = 0; i < 8; i++) {
+			this.drawBox(xo, yo, 'Number', (i + 1).toString());
+			xo = xo + this.boxDimension;
+		}
 
+		// Third row
+		xo = - (this.boxDimension * this.boxNumber) / 2;
+		yo = - height/2 + this.boxDimension + this.numDimension;
+		for (var i = 0; i < 5; i++) {
+			this.drawBox(xo, yo, 'Adult', '');
+			xo = xo + this.boxDimension;
+		}
+		for (i = 0; i < 6; i++) {
+			this.drawBox(xo, yo, 'Child', '');
+			xo = xo + this.boxDimension;
+		}
+		for (i = 0; i < 5; i++) {
+			this.drawBox(xo, yo, 'Adult', '');
+			xo = xo + this.boxDimension;
+		}
+
+	}
+
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+ED.Chart.prototype.drawBox = function(_xo, _yo, _type, _label) {
+	var ctx = this.drawing.context;
+
+	// Line colour and size
+	ctx.lineWidth = 4;
+	ctx.strokeStyle = "gray";
+
+	// Start path
+	ctx.beginPath();
+
+	// Inner structure
+	switch (_type) {
+		case 'Adult':
+			ctx.rect(_xo, _yo, this.boxDimension, this.boxDimension);
+			var pr = 4;
+			var xi = _xo + this.boxDimension/pr;
+			var yi = _yo + this.boxDimension/pr;
+
+			var di = this.boxDimension - 2 * this.boxDimension/pr;
+			ctx.lineTo(xi, yi);
+			ctx.lineTo(xi, yi + di);
+			ctx.lineTo(_xo, _yo + this.boxDimension);
+			ctx.moveTo(xi, yi + di);
+			ctx.lineTo(xi + di, yi + di);
+			ctx.lineTo(_xo + this.boxDimension, _yo + this.boxDimension);
+			ctx.moveTo(xi + di, yi + di);
+			ctx.lineTo(xi + di, yi);
+			ctx.lineTo(_xo + this.boxDimension, _yo);
+			ctx.moveTo(xi + di, yi);
+			ctx.lineTo(xi, yi);
+			ctx.stroke();
+			break;
+
+		case 'Child':
+			ctx.rect(_xo, _yo, this.boxDimension, this.boxDimension);
+			var pr = 4;
+			var xi = _xo + this.boxDimension/pr;
+			var yi = _yo + this.boxDimension/2;
+			ctx.lineTo(xi, yi);
+			ctx.lineTo(_xo, _yo + this.boxDimension);
+			ctx.moveTo(xi, yi);
+			ctx.lineTo(_xo + this.boxDimension - this.boxDimension/pr, yi);
+			ctx.lineTo(_xo + this.boxDimension, _yo);
+			ctx.moveTo(_xo + this.boxDimension - this.boxDimension/pr, yi);
+			ctx.lineTo(_xo + this.boxDimension, _yo + this.boxDimension);
+			ctx.stroke();
+			break;
+
+		case 'Number':
+			ctx.rect(_xo, _yo, this.boxDimension, this.numDimension);
+			ctx.stroke();
+			ctx.font = "64px sans-serif";
+			var textWidth = ctx.measureText(_label).width;
+			ctx.fillStyle = "gray"
+			ctx.fillText(_label, _xo + this.boxDimension/2 - textWidth / 2, _yo + this.boxDimension/2 - 10);
+			break;
+	}
+
+}
+
+/**
+ * Inlay
+ *
+ * @class Inlay
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Object} _parameterJSON
+ */
+ED.Inlay = function(_drawing, _parameterJSON) {
+	// Set classname
+	this.className = "Inlay";
+
+	// Internal parameters
+	this.boxDimension = +200;
+	this.showPopup = true;
+
+	// Derived parameters
+	this.type = 'Temporary';
+
+	// Saved parameters
+	this.savedParameterArray = ['originX', 'originY', 'type'];
+
+	// Parameters in doodle control bar (parameter name: parameter label)
+	this.controlParameterArray = {
+		'type':'Type',
+	};
+
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _parameterJSON);
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.Inlay.prototype = new ED.Doodle;
+ED.Inlay.prototype.constructor = ED.Inlay;
+ED.Inlay.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.Inlay.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
+
+/**
+ * Sets default dragging attributes
+ */
+ED.Inlay.prototype.setPropertyDefaults = function() {
+	this.isMoveable = false;
+	this.isRotatable = false;
+
+	// Array of angles to snap to
+// 	var phi = Math.PI / 2;
+// 	this.anglesArray = [0, 1 * phi, 2 * phi, 3 * phi];
+
+	this.parameterValidationArray['type'] = {
+		kind: 'derived',
+		type: 'string',
+		list: ['Temporary', 'Porcelain', 'Gold'],
+		animate: false
+	};
+}
+
+/**
+ * Sets default parameters
+ */
+ED.Inlay.prototype.setParameterDefaults = function() {
+	// Get last added doodle
+	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+	// If there is a chart, interrogate box array to get position
+	if (chartDoodle) {
+		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+			if (!chartDoodle.boxArray[i].occupied) {
+				var newOriginX = chartDoodle.boxArray[i].point.x;
+				var newOriginY = chartDoodle.boxArray[i].point.y;
+				chartDoodle.boxArray[i].occupied = true;
+				break;
+			}
+		}
+	}
+	else {
+		var newOriginX = 0;
+		var newOriginY = -400;
+	}
+	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
+	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.Inlay.prototype.draw = function(_point) {
+	// Get context
+	var ctx = this.drawing.context;
+
+	// Call draw method in superclass
+	ED.Inlay.superclass.draw.call(this, _point);
+
+	// Boundary path
+	ctx.beginPath();
+
+	// Boundary
+	var d = this.boxDimension;
+	ctx.rect(-d/2, -d/2, d, d);
+	var lt = 6;
+
+	// Set line attribute
+	ctx.lineWidth = lt;
+	ctx.strokeStyle = "blue";
+	ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+
+	// Non-boundary paths
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
+		ctx.beginPath();
+
+		// Curve
+		ctx.moveTo(-d/2, -d/3);
+		ctx.bezierCurveTo(-d/3, 0, 0, -d/4, 0, 0);
+		ctx.bezierCurveTo(0, +d/4, -d/3, 0, -d/2, +d/3);
+
+		// Hashed lines
+		var b = d/9;
+		ctx.moveTo(-4 * b, -2.1 * b);
+		ctx.lineTo(-4 * b, +2.1 * b);
+		ctx.moveTo(-3 * b, -1.55 * b);
+		ctx.lineTo(-3 * b, +1.55 * b);
+		ctx.moveTo(-2 * b, -1.2 * b);
+		ctx.lineTo(-2 * b, +1.2 * b);
+		ctx.moveTo(-1 * b, -1.1 * b);
+		ctx.lineTo(-1 * b, +1.1 * b);
+
+		// Stroke
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 6;
 		ctx.stroke();
+
+		// Text
+		var label = "";
+		switch (this.type) {
+			case 'Temporary':
+				label = "TEMP";
+				break;
+			case 'Porcelain':
+				label = "PL";
+				break;
+			case 'Gold':
+				label = "GL";
+				break;
+		}
+		ctx.font = "32px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
+	}
+
+
+	// Coordinates of handles (in canvas plane)
+	var point = new ED.Point(0, 0)
+	point.setWithPolars(d/1.414, 7 * Math.PI / 4);
+	this.handleArray[2].location = this.transform.transformPoint(point);
+
+	// Draw handles if selected
+	//if (this.isSelected && !this.isForDrawing) this.drawHandles(_point)
+
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
+ * Missing
+ *
+ * @class Missing
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Object} _parameterJSON
+ */
+ED.Missing = function(_drawing, _parameterJSON) {
+	// Set classname
+	this.className = "Missing";
+
+	// Internal parameters
+	this.boxDimension = +200;
+	this.showPopup = false;
+
+	// Saved parameters
+	this.savedParameterArray = ['originX', 'originY'];
+
+	// Parameters in doodle control bar (parameter name: parameter label)
+// 	this.controlParameterArray = {
+// 		'position':'Position',
+// 	};
+
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _parameterJSON);
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.Missing.prototype = new ED.Doodle;
+ED.Missing.prototype.constructor = ED.Missing;
+ED.Missing.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets default dragging attributes
+ */
+ED.Missing.prototype.setPropertyDefaults = function() {
+	this.isMoveable = false;
+	this.isRotatable = false;
+}
+
+/**
+ * Sets default parameters
+ */
+ED.Missing.prototype.setParameterDefaults = function() {
+	// Get last added doodle
+	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+	// If there is a chart, interrogate box array to get position
+	if (chartDoodle) {
+		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+			if (!chartDoodle.boxArray[i].occupied) {
+				var newOriginX = chartDoodle.boxArray[i].point.x;
+				var newOriginY = chartDoodle.boxArray[i].point.y;
+				chartDoodle.boxArray[i].occupied = true;
+				break;
+			}
+		}
+	}
+	else {
+		var newOriginX = 0;
+		var newOriginY = -400;
+	}
+	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
+	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.Missing.prototype.draw = function(_point) {
+	// Get context
+	var ctx = this.drawing.context;
+
+	// Call draw method in superclass
+	ED.Missing.superclass.draw.call(this, _point);
+
+	// Boundary path
+	ctx.beginPath();
+
+	// Boundary
+	var d = this.boxDimension;
+	ctx.rect(-d/2, -d/2, d, d);
+	var lt = 6;
+
+	// Set line attribute
+	ctx.lineWidth = lt;
+	ctx.strokeStyle = "blue";
+	ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+
+	// Non-boundary paths
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
+		ctx.beginPath();
+
+		// Left arrow
+		ctx.moveTo(-d/2, 0);
+		ctx.lineTo(-d/10, 0);
+		ctx.lineTo(-d/6, -d/12);
+		ctx.moveTo(-d/10, 0);
+		ctx.lineTo(-d/6, +d/12);
+
+		// Right arrow
+		ctx.moveTo(+d/2, 0);
+		ctx.lineTo(+d/10, 0);
+		ctx.lineTo(+d/6, -d/12);
+		ctx.moveTo(+d/10, 0);
+		ctx.lineTo(+d/6, +d/12);
+
+		ctx.strokeStyle = "red";
+		ctx.lineWidth = 6;
+		ctx.stroke();
+
+
+	}
+
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
+ * Normal
+ *
+ * @class Normal
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Object} _parameterJSON
+ */
+ED.Normal = function(_drawing, _parameterJSON) {
+	// Set classname
+	this.className = "Normal";
+
+	// Internal parameters
+	this.boxDimension = +200;
+	this.showPopup = false;
+
+	// Saved parameters
+	this.savedParameterArray = ['originX', 'originY'];
+
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _parameterJSON);
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.Normal.prototype = new ED.Doodle;
+ED.Normal.prototype.constructor = ED.Normal;
+ED.Normal.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets default dragging attributes
+ */
+ED.Normal.prototype.setPropertyDefaults = function() {
+	this.isMoveable = false;
+	this.isRotatable = false;
+}
+
+/**
+ * Sets default parameters
+ */
+ED.Normal.prototype.setParameterDefaults = function() {
+	// Get last added doodle
+	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+	// If there is a chart, interrogate box array to get position
+	if (chartDoodle) {
+		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+			if (!chartDoodle.boxArray[i].occupied) {
+				var newOriginX = chartDoodle.boxArray[i].point.x;
+				var newOriginY = chartDoodle.boxArray[i].point.y;
+				chartDoodle.boxArray[i].occupied = true;
+				break;
+			}
+		}
+	}
+	else {
+		var newOriginX = 0;
+		var newOriginY = -400;
+	}
+	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
+	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.Normal.prototype.draw = function(_point) {
+	// Get context
+	var ctx = this.drawing.context;
+
+	// Call draw method in superclass
+	ED.Normal.superclass.draw.call(this, _point);
+
+	// Boundary path
+	ctx.beginPath();
+
+	// Boundary
+	var d = this.boxDimension;
+	ctx.rect(-d/2, -d/2, d, d);
+	var lt = 6;
+
+	// Set line attribute
+	ctx.lineWidth = lt;
+	ctx.strokeStyle = "blue";
+	ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+
+	// Non-boundary paths
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
 	}
 
 	// Return value indicating successful hittest
@@ -12401,6 +12894,10 @@ ED.Chart.prototype.draw = function(_point) {
 ED.Restoration = function(_drawing, _parameterJSON) {
 	// Set classname
 	this.className = "Restoration";
+
+	// Internal parameters
+	this.boxDimension = +200;
+	this.showPopup = true;
 
 	// Derived parameters
 	this.position = 'Occlusal';
@@ -12428,8 +12925,8 @@ ED.Restoration.superclass = ED.Doodle.prototype;
  * Sets default dragging attributes
  */
 ED.Restoration.prototype.setPropertyDefaults = function() {
-	this.snapToGrid = true;
-	this.gridSpacing = 200;
+	this.isMoveable = false;
+	this.isRotatable = false;
 
 	this.parameterValidationArray['position'] = {
 		kind: 'derived',
@@ -12444,16 +12941,22 @@ ED.Restoration.prototype.setPropertyDefaults = function() {
  */
 ED.Restoration.prototype.setParameterDefaults = function() {
 	// Get last added doodle
-	var doodle = this.drawing.lastDoodleOfClass(this.className);
+	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
 
-	// If there is one, make position relative to it
-	if (doodle) {
-		var newOriginX = doodle.originX + 200;
-		var newOriginY = 0;
+	// If there is a chart, interrogate box array to get position
+	if (chartDoodle) {
+		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+			if (!chartDoodle.boxArray[i].occupied) {
+				var newOriginX = chartDoodle.boxArray[i].point.x;
+				var newOriginY = chartDoodle.boxArray[i].point.y;
+				chartDoodle.boxArray[i].occupied = true;
+				break;
+			}
+		}
 	}
 	else {
-		var newOriginX = -400;
-		var newOriginY = 0;
+		var newOriginX = 0;
+		var newOriginY = -400;
 	}
 	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
 	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
@@ -12475,12 +12978,9 @@ ED.Restoration.prototype.draw = function(_point) {
 	ctx.beginPath();
 
 	// Boundary
-	var d = 200;
+	var d = this.boxDimension;
 	ctx.rect(-d/2, -d/2, d, d);
 	var lt = 6;
-
-	// Close path
-	//ctx.closePath();
 
 	// Set line attribute
 	ctx.lineWidth = lt;

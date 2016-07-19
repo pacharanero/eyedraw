@@ -6,6 +6,15 @@
 
         <!-- EyeDraw CSS style sheet -->
         <link rel="stylesheet" href="../../assets/css/oe-eyedraw.css" type="text/css" media="screen" />
+        <style>
+        	.ed-button {
+		  display: inline;
+		}
+
+		.ed-doodle-popup {
+			border-width: 1px 1px 1px 1px;
+		}
+        </style>
 
         <!-- Depedendant 3rd-party libraries -->
 
@@ -83,267 +92,95 @@
                         // Eye draw image files all loaded
                         case 'ready':
 
-							//Scale down for glaucoma drawings
-							this.drawing.globalScaleFactor = this.gsf;
+					//Scale down for glaucoma drawings
+					this.drawing.globalScaleFactor = this.gsf;
 
-							//this.drawing.addDoodle('AxialLengthGraph', {'axialLength':'25'});
-							//this.drawing.addDoodle('Fundus', {'pupilSize':'Medium'});
-							//this.drawing.addDoodle('Patient', {}, {recliningAngle:{id:'recliningAngleInput'}});
-							//this.drawing.addDoodle('TrialLens', {}, {axis:{id:'axis'}});
-							//this.drawing.addDoodle('ToricPCIOL', {}, {axis:{id:'axis'}});
-							//this.drawing.addDoodle('CiliaryInjection');
-							//this.drawing.addDoodle('CornealGraft', {}, {diameter:{id:'diameter'}});
-							//this.drawing.addDoodle('DrainageRetinotomy');
-							//this.drawing.addDoodle('DendriticUlcer');
-							//this.drawing.addDoodle('Episcleritis');
-							this.drawing.addDoodle('Chart');
-							this.drawing.addDoodle('Restoration');
+					//this.drawing.addDoodle('AxialLengthGraph', {'axialLength':'25'});
+					//this.drawing.addDoodle('Fundus', {'pupilSize':'Medium'});
+					//this.drawing.addDoodle('Patient', {}, {recliningAngle:{id:'recliningAngleInput'}});
+					//this.drawing.addDoodle('TrialLens', {}, {axis:{id:'axis'}});
+					//this.drawing.addDoodle('ToricPCIOL', {}, {axis:{id:'axis'}});
+					//this.drawing.addDoodle('CiliaryInjection');
+					//this.drawing.addDoodle('CornealGraft', {}, {diameter:{id:'diameter'}});
+					//this.drawing.addDoodle('DrainageRetinotomy');
+					//this.drawing.addDoodle('DendriticUlcer');
+					//this.drawing.addDoodle('Episcleritis');
+					this.drawing.addDoodle('Chart');
+// 					this.drawing.addDoodle('Restoration');
+// 					this.drawing.addDoodle('Missing');
+// 					this.drawing.addDoodle('Inlay');
+					this.drawing.deselectDoodles();
 
-							//debugger;
-							//this.drawing.addDoodle('SMILE');
-							//this.drawing.addDoodle('ICL', {}, {axis:{id:'axisInput'}});
-							//this.drawing.addDoodle('ArcuateKeratotomy');
-							//this.drawing.addDoodle('LimbalRelaxingIncision');
-							//this.drawing.addDoodle('TrabyFlap');
-							//this.drawing.addDoodle('Tube');
-							//this.drawing.addDoodle('TubeLigation');
-							//this.drawing.addDoodle('Patch');
-							//this.drawing.addDoodle('TrabySuture');
-							//this.drawing.addDoodle('TrabySuture')
-							//this.drawing.addDoodle('TubeExtender');
-							//this.drawing.addDoodle('Supramid');
-							//this.drawing.addDoodle('ConjunctivalSuture');
-							//this.drawing.addDoodle('ACMaintainer');
-							//this.drawing.addDoodle('UTear');
-							//this.drawing.addDoodle('EarDrum');
-							//this.drawing.addDoodle('Perforation');
-							//this.drawing.addDoodle('Fundus');
-							//this.drawing.addDoodle('PostSubcapCataract');
-							//this.drawing.addDoodle('Freehand', {}, {colour:{id:'colourSelect'}});
-
-							// Grid , {type:{id:'piTypeSelect'}}  , {type:'Laser'}, {suture:{id:'Eyedraw_boolField'}}
-					    	//this.drawing.addDoodle('Lungs');
-
-							// Right eye
-// 					    	rightEye = this.drawing.addDoodle(
-// 					    		'HVT',
-// 					    		{},
-// 					        	{
-// 					        		hor:{id:'horSelect', attribute:'value'}, ver:{id:'verSelect', attribute:'value'}, tor:{id:'torSelect', attribute:'value'},
-// 					        		horValue:{id:'horValueSelect', attribute:'value'},
-// 					        		verValue:{id:'verValueSelect', attribute:'value'},
-// 					        		torValue:{id:'torValueSelect', attribute:'value'},
-// 								}
-// 					        );
-//
-// 					        // Constrain x movement
-// 					        //rightEye.parameterValidationArray['originX']['range'] = new ED.Range(-350, -150);
-//
-// 					        // Left eye
-// 					        leftEye = this.drawing.addDoodle('HVT', {rotation:Math.PI/4});
-// 					        leftEye.parameterValidationArray['originX']['range'] = new ED.Range(+150, +350);
-// 					        leftEye.originX = +250;
-
-					        //this.drawing.deselectDoodles();
-
-
-
-
-
-							// Scale on width for RecordGrid
-
- 							//this.drawing.addDoodle('OpticDisc');
-// 							this.drawing.addDoodle('TransilluminationDefect');
-
-
-							//this.drawing.addDoodle('PostPole');
-							//this.drawing.addDoodle('BranchRetinalVeinOcclusionPostPole');
-							//this.drawing.addDoodle('SectorPRP');
-
-							//grid = this.drawing.addDoodle('RecordGrid');
-							//this.drawing.addDoodle('RecordReading', {'type':'sys'});
-							//this.drawing.addDoodle('BPReading', {'stolic':'dia'});
-
-							//this.drawing.addDoodle('AgentDuration');
-
-
-							//var drawing = this.drawing;
-
-// Animation to update timeline every second
-// 							setInterval(function() {
-// 								console.log('Hello');
-// 								grid.nowDate.setMinutes(grid.nowDate.getMinutes() + 1);
-// 								drawing.repaint();
-// 							}, 5000);
-
-//
-// 							this.drawing.addDoodle('PostPole');
-// 							this.drawing.addDoodle('FibrousProliferation');
-
-							//this.drawing.addDoodle('BlotHaemorrhage');
-
-
-/*
-							// Column 1
-							this.drawing.addDoodle('FieldCircle', {originX:-450, originY:-150, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-450, originY:-50, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-450, originY:+50, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-450, originY:+150, colour:"FF0000"});
-
-							// Column 2
-							this.drawing.addDoodle('FieldCircle', {originX:-350, originY:-250, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-350, originY:-150, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-350, originY:-50, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-350, originY:+50, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-350, originY:+150, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-350, originY:+250, colour:"FF0000"});
-
-							// Column 3
-							this.drawing.addDoodle('FieldCircle', {originX:-250, originY:-350, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-250, originY:-250, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-250, originY:-150, colour:"FF0000"});
-
-							this.drawing.addDoodle('FieldCircle', {originX:-250, originY:+150, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-250, originY:+250, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-250, originY:+350, colour:"008000"});
-
-							// Column 4
-							this.drawing.addDoodle('FieldCircle', {originX:-150, originY:-350, colour:"FF0000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-150, originY:-250, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-150, originY:-150, colour:"008000"});
-
-							this.drawing.addDoodle('FieldCircle', {originX:-150, originY:+150, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-150, originY:+250, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-150, originY:+350, colour:"FF0000"});
-
-							// Column 5
-							this.drawing.addDoodle('FieldCircle', {originX:-50, originY:-350, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-50, originY:-250, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-50, originY:-150, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-50, originY:-50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-50, originY:+50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-50, originY:+150, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-50, originY:+250, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:-50, originY:+350, colour:"008000"});
-
-							// Column 6
-							this.drawing.addDoodle('FieldCircle', {originX:+50, originY:-350, colour:"FFA400"});
-							this.drawing.addDoodle('FieldCircle', {originX:+50, originY:-250, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+50, originY:-150, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+50, originY:-50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+50, originY:+50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+50, originY:+150, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+50, originY:+250, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+50, originY:+350, colour:"FFA400"});
-
-							// Column 7
-							this.drawing.addDoodle('FieldCircle', {originX:+150, originY:-250, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+150, originY:-150, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+150, originY:-50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+150, originY:+50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+150, originY:+150, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+150, originY:+250, colour:"008000"});
-
-							// Column 8
-							this.drawing.addDoodle('FieldCircle', {originX:+150, originY:-150, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+150, originY:-50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+150, originY:+50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+150, originY:+150, colour:"008000"});
-
-							// Column 9
-							this.drawing.addDoodle('FieldCircle', {originX:+250, originY:-150, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+250, originY:-50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+250, originY:+50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+250, originY:+150, colour:"008000"});
-
-							// Column 10
-							this.drawing.addDoodle('FieldCircle', {originX:+350, originY:-50, colour:"008000"});
-							this.drawing.addDoodle('FieldCircle', {originX:+350, originY:+50, colour:"008000"});
-*/
-							//this.drawing.deselectDoodles();
-                            break;
+					break;
 
                         case 'parameterChanged':
-                            var doodle = _messageArray['object'].doodle;
+					var doodle = _messageArray['object'].doodle;
 
 
-                            break;
+					break;
+
+                        case 'doodleSelected':
+                        	var doodle = this.drawing.selectedDoodle;
+                        	if (doodle.showPopup) {
+						var propWindow = document.getElementById('canvasEdit_controls');
+						propWindow.style.visibility = 'visible';
+						propWindow.style.left = (this.drawing.selectedDoodle.originX * this.drawing.scale + 530).toString() + 'px';
+						propWindow.style.top = (this.drawing.selectedDoodle.originY * this.drawing.scale + 80).toString() + 'px';
+                        	}
+                        	break;
+
+                        case 'doodleDeselected':
+                        	if (this.drawing.selectedDoodle == null) {
+						var propWindow = document.getElementById('canvasEdit_controls');
+						propWindow.style.visibility = 'hidden';
+                        	}
+                        	break;
 
                         case 'doodleAdded':
-							var dood = _messageArray['object'];
-							if (typeof(dood) != 'undefined')
-							{
-// 								if (dood.className == 'TrabySuture')
-// 								{
-// 									// Add it to first available slot in suture Array
-// 									for (var i = 0; i < sutureArray.length; i++)
-//                             		{
-//                             			if (sutureArray[i] == null)
-//                             			{
-//                             				sutureArray[i] = dood;
-//
-// 											var trab = this.drawing.lastDoodleOfClass("TrabyFlap");
-// 											if (trab)
-// 											{
-// 												// Get original position
-// 												var p = suturePointsArray[i];
-//
-// 												// Calculate radius to this point
-// 												var r = Math.sqrt(p.x * p.x + p.y * p.y);
-//
-// 												// Calculate new position
-// 												var np = p.pointAtRadiusAndClockwiseAngle(r, trab.rotation);
-//
-// 												// Apply it to suture
-// 												sutureArray[i].originX = np.x;
-// 												sutureArray[i].originY = np.y;
-//
-// 												// Apply rotation
-// 												sutureArray[i].rotation = ED.Mod(p.angle + trab.rotation, 2 * Math.PI);
-//
-// 												// Apply type
-// 												sutureArray[i].setParameterFromString('type', p.type);
-//
-// 												// Apply firstOrginX
-// 												sutureArray[i].firstOriginX = p.ex;
-//
-// 												this.drawing.repaint();
-// 											}
-//
-//                             				break;
-//                             			}
-//                             		}
-// 								}
-							}
-							break;
+					var dood = _messageArray['object'];
+					var propWindow = document.getElementById('canvasEdit_controls');
+					if (typeof(dood) != 'undefined' &&  dood.showPopup) {
+						propWindow.style.visibility = 'visible';
+						propWindow.style.left = (this.drawing.selectedDoodle.originX * this.drawing.scale + 530).toString() + 'px';
+						propWindow.style.top = (this.drawing.selectedDoodle.originY * this.drawing.scale + 80).toString() + 'px';
+					}
+					else {
+						propWindow.style.visibility = 'hidden';
+					}
+					break;
 
                         case 'doodleDeleted':
-							var className = _messageArray['object'];
-							if (typeof(className) != 'undefined')
-							{
-								if (className == 'TrabySuture')
-								{
-									console.log('Traby suture deleted');
+					var deletedClass = _messageArray['object'];
+					if (typeof(deletedClass) != 'undefined') {
 
-									// Go through array identifying which one has been removed
-									for (var i = 0; i < sutureArray.length; i++)
-                            		{
-                            			var id = sutureArray[i].id;
-                            			if (!this.drawing.doodleOfId(id))
-                            			{
-                            				sutureArray[i] = null;
-                            			}
-                            		}
+						// Get Chart doodle
+						var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+						// If there is a chart, interrogate box array to get position
+						if (chartDoodle) {
+							// Reset occupied flag to false
+							for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+								chartDoodle.boxArray[i].occupied = false;
+							}
+							// Go through again restoring valid flags
+							for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+								for (var index in this.drawing.doodleArray) {
+									var doodle = this.drawing.doodleArray[index];
+									if (doodle.className != "Chart") {
+										var p = chartDoodle.boxArray[i].point;
+										if (p.x == doodle.originX && p.y == doodle.originY) {
+											chartDoodle.boxArray[i].occupied = true;
+										}
+									}
 								}
 							}
-							break;
+						}
+					}
+
+					break;
 
                     }
                 }
-            }
-
-            function zoom() {
-				drawingEdit.toggleZoom();
             }
 
             </script>
@@ -352,7 +189,7 @@
     <body onload="init();">
 
         <!-- Doodle controls toolbar -->
-        <div class="ed-toolbar">
+        <div class="ed-toolbar" >
             <button class="ed-button" id="moveToFrontRPS" title="Move to front" onclick="drawingEdit.moveToFront(); return false;" ><img src="../../assets/img/old/moveToFront.gif"/></button>
             <button class="ed-button" id="moveToBackRPS" title="Move to back" onclick="drawingEdit.moveToBack(); return false;" ><img src="../../assets/img/old/moveToBack.gif" /></button>
             <button class="ed-button" id="flipVerRPS" title="Flip around vertical axis" onclick="drawingEdit.flipVer(); return false;" ><img src="../../assets/img/old/flipVer.gif" /></button>
@@ -363,63 +200,25 @@
 
             <label style="display:none;" ><input class="checkbox" type="checkbox" id="isSuturedSclerostomyRPS" onchange="drawingEdit.setSelectedDoodle(this, 'isSutured');return false;" />Sutured</label>
 
-            <!-- Squiggle options -->
-            <span class= "squiggle" id="squiggleSpanRPS" style="display:none;">
-                <img class="colourWell" border="0" src="../../assets/img/old/ColourWell.gif" usemap="#colormapRPS" alt='colormap' />
-                <map id="colormapRPS" name="colormapRPS">
-                    <area style="cursor:pointer" shape="rect" coords="0,0,16,16" onclick="drawingEdit.setSquiggleColour('000000');" />
-                    <area style="cursor:pointer" shape="rect" coords="16,0,32,16" onclick="drawingEdit.setSquiggleColour('FF0000');" />
-                    <area style="cursor:pointer" shape="rect" coords="32,0,48,16" onclick="drawingEdit.setSquiggleColour('FF7F00');" />
-                    <area style="cursor:pointer" shape="rect" coords="0,16,16,32" onclick="drawingEdit.setSquiggleColour('0000FF');" />
-                    <area style="cursor:pointer" shape="rect" coords="16,16,32,32" onclick="drawingEdit.setSquiggleColour('00FF00');" />
-                    <area style="cursor:pointer" shape="rect" coords="32,16,48,32" onclick="drawingEdit.setSquiggleColour('FFFF00');" />
-                </map>
-<!--                 <img class="drawingControl" border="0" src="../../assets/img/old/DrawingControl.gif" usemap="#drawingControlRPS" alt='drawingcontrol' /> -->
-                <map id="drawingControlRPS" name="drawingControlRPS">
-                    <area style="cursor:pointer" shape="rect" coords="0,0,16,16" onclick="drawingEdit.setSquiggleWidth(ED.squiggleWidth.Thin);" />
-                    <area style="cursor:pointer" shape="rect" coords="16,0,32,16" onclick="drawingEdit.setSquiggleWidth(ED.squiggleWidth.Medium);" />
-                    <area style="cursor:pointer" shape="rect" coords="32,0,48,16" onclick="drawingEdit.setSquiggleWidth(ED.squiggleWidth.Thick);" />
-                    <area style="cursor:pointer" shape="rect" coords="0,16,24,32" onclick="console.log('one');drawingEdit.setSquiggleStyle(ED.squiggleStyle.Outline);" />
-                    <area style="cursor:pointer" shape="rect" coords="24,16,48,32" onclick="console.log('two');drawingEdit.setSquiggleStyle(ED.squiggleStyle.Solid);" />
-                </map>
-                <canvas id="squiggleSettingsRPS" width="24" height="32"></canvas>
-
-            </span>
 
             <br />
         </div>
 
         <!-- Doodle selection toolbar -->
         <div class="ed-toolbar" id="canvasEdit1doodleToolbar">
-<!--
-            <button id="LensRPS" class="imgbutton" title="Lens" onclick="
-				var vals = grid.getNextValues('sys');
-				if (vals) var sys = drawingEdit.addDoodle('RecordReading', {'type':'sys', 'value':vals['value'], 'originX':vals['originX']});
-				var vals = grid.getNextValues('dia');
-				if (vals) var dia = drawingEdit.addDoodle('RecordReading', {'type':'dia', 'value':vals['value'], 'originX':vals['originX']});
-				var vals = grid.getNextValues('pul');
-				if (vals) var pul = drawingEdit.addDoodle('RecordReading', {'type':'pul', 'value':vals['value'], 'originX':vals['originX']});
-				var vals = grid.getNextValues('res');
-				if (vals) var res = drawingEdit.addDoodle('RecordReading', {'type':'res', 'value':vals['value'], 'originX':vals['originX']});
-				drawingEdit.deselectDoodles();
-				return false;
-            " ><img src="../../assets/img/old/RecordReading.gif" /></button>
-
-            <button id="LensRPS" class="imgbutton" title="Lens" onclick="drawingEdit.addDoodle('PI'); return false;" ><img src="../../assets/img/old/PI.gif" /></button>
- -->
-            <button id="LensRPS" class="ed-button" title="IOL" onclick="drawingEdit.addDoodle('IOL'); return false;" ><img src="../../assets/img/old/IOL.gif" /></button>
-            <button id="LensRPS" class="ed-button" title="ArcuateKeratotomy" onclick="drawingEdit.addDoodle('ArcuateKeratotomy'); return false;" ><img src="../../assets/img/old/ArcuateKeratotomy.gif" /></button>
-            <button id="LensRPS" class="ed-button" title="Supramid" onclick="drawingEdit.addDoodle('CornealGraftSuture'); return false;" ><img src="../../assets/img/old/CornealSuture.gif" /></button>
-            <button id="LensRPS" class="ed-button" title="Pterygium" onclick="drawingEdit.addDoodle('Restoration'); return false;" ><img src="../../assets/img/old/Restoration.gif" /></button>
+            <button id="LensRPS" class="ed-button" title="Normal" onclick="drawingEdit.addDoodle('Normal'); return false;" ><img src="../../assets/img/old/Normal.gif" /></button>
+            <button id="LensRPS" class="ed-button" title="Missing" onclick="drawingEdit.addDoodle('Missing'); return false;" ><img src="../../assets/img/old/Missing.gif" /></button>
+            <button id="LensRPS" class="ed-button" title="Restoration" onclick="drawingEdit.addDoodle('Restoration'); return false;" ><img src="../../assets/img/old/Restoration.gif" /></button>
+            <button id="LensRPS" class="ed-button" title="Inlay" onclick="drawingEdit.addDoodle('Inlay'); return false;" ><img src="../../assets/img/old/Inlay.gif" /></button>
             <br />
         </div>
 
 		<!-- Canvas -->
 		<div style="position:relative;">
 			<span id="canvasTooltip"></span>
-			<canvas id="canvasEdit" class="ed-canvas" width="500" height="300" tabindex="1"></canvas>
+			<canvas id="canvasEdit" class="ed-canvas" width="1000" height="300" tabindex="1"></canvas>
 			<!-- Doodle control panel -->
-			<div id="canvasEdit_controls" class="ed-doodle-popup" style="background-color: #DAE6F1; float:left; position:absolute; top:20px; left:310px;">
+			<div id="canvasEdit_controls" class="ed-doodle-popup" style="background-color: #DAE6F1; position:absolute; left:50px; top:20px; visibility:hidden;">
 			</div>
 
 		</div>
@@ -429,214 +228,7 @@
 
         <button class="actbutton" onclick="console.log(drawingEdit.report()); return false;">Report</button>
 
-<!--
-        <select id="colourSelect">
-			<option value='FF0000FF'>Red</option>
-			<option value='00FF00FF'>Green</option>
-		</select>
- -->
 
-        <!-- <input id="Eyedraw_boolField" type="checkbox"> -->
-
-
-<!--
-        <br/>
-
-		<select id="horSelect">
-			<option value="XT">XT</option>
-			<option value="None" selected="true" >None</option>
-			<option value="ET">ET</option>
-		</select>
-
-		<select id="verSelect">
-			<option value="R/L">R/L</option>
-			<option value="None" selected="true" >None</option>
-			<option value="L/R">L/R</option>
-		</select>
-
-		<select id="torSelect">
-			<option value="Excyclotorsion">Excyclotorsion</option>
-			<option value="None" selected="true" >None</option>
-			<option value="Incyclotorsion">Incyclotorsion</option>
-		</select>
-
-		</br>
-		<select id="horValueSelect">
-			<option value=0>0</option>
-			<option value=1>1</option>
-			<option value=2>2</option>
-			<option value=3>3</option>
-			<option value=4>4</option>
-			<option value=5>5</option>
-			<option value=6>6</option>
-			<option value=7>7</option>
-			<option value=8>8</option>
-			<option value=9>9</option>
-			<option value=10>10</option>
-			<option value=11>11</option>
-			<option value=12>12</option>
-			<option value=13>13</option>
-			<option value=14>14</option>
-			<option value=15>15</option>
-			<option value=16>16</option>
-			<option value=17>17</option>
-			<option value=18>18</option>
-			<option value=19>19</option>
-			<option value=20>20</option>
-			<option value=21>21</option>
-			<option value=22>22</option>
-			<option value=23>23</option>
-			<option value=24>24</option>
-			<option value=25>25</option>
-			<option value=26>26</option>
-			<option value=27>27</option>
-			<option value=28>28</option>
-			<option value=29>29</option>
-			<option value=30>30</option>
-			<option value=31>31</option>
-			<option value=32>32</option>
-			<option value=33>33</option>
-			<option value=34>34</option>
-			<option value=35>35</option>
-			<option value=36>36</option>
-			<option value=37>37</option>
-			<option value=38>38</option>
-			<option value=39>39</option>
-			<option value=40>40</option>
-			<option value=41>41</option>
-			<option value=42>42</option>
-			<option value=43>43</option>
-			<option value=44>44</option>
-			<option value=45>45</option>
-			<option value=46>46</option>
-			<option value=47>47</option>
-			<option value=48>48</option>
-			<option value=49>49</option>
-			<option value=50>50</option>
-		</select>
-
-		<select id="verValueSelect">
-			<option value=0>0</option>
-			<option value=1>1</option>
-			<option value=2>2</option>
-			<option value=3>3</option>
-			<option value=4>4</option>
-			<option value=5>5</option>
-			<option value=6>6</option>
-			<option value=7>7</option>
-			<option value=8>8</option>
-			<option value=9>9</option>
-			<option value=10>10</option>
-			<option value=11>11</option>
-			<option value=12>12</option>
-			<option value=13>13</option>
-			<option value=14>14</option>
-			<option value=15>15</option>
-			<option value=16>16</option>
-			<option value=17>17</option>
-			<option value=18>18</option>
-			<option value=19>19</option>
-			<option value=20>20</option>
-			<option value=21>21</option>
-			<option value=22>22</option>
-			<option value=23>23</option>
-			<option value=24>24</option>
-			<option value=25>25</option>
-			<option value=26>26</option>
-			<option value=27>27</option>
-			<option value=28>28</option>
-			<option value=29>29</option>
-			<option value=30>30</option>
-			<option value=31>31</option>
-			<option value=32>32</option>
-			<option value=33>33</option>
-			<option value=34>34</option>
-			<option value=35>35</option>
-			<option value=36>36</option>
-			<option value=37>37</option>
-			<option value=38>38</option>
-			<option value=39>39</option>
-			<option value=40>40</option>
-			<option value=41>41</option>
-			<option value=42>42</option>
-			<option value=43>43</option>
-			<option value=44>44</option>
-			<option value=45>45</option>
-			<option value=46>46</option>
-			<option value=47>47</option>
-			<option value=48>48</option>
-			<option value=49>49</option>
-			<option value=50>50</option>
-		</select>
-
-		<select id="torValueSelect">
-			<option value=0>0</option>
-			<option value=1>1</option>
-			<option value=2>2</option>
-			<option value=3>3</option>
-			<option value=4>4</option>
-			<option value=5>5</option>
-			<option value=6>6</option>
-			<option value=7>7</option>
-			<option value=8>8</option>
-			<option value=9>9</option>
-			<option value=10>10</option>
-			<option value=11>11</option>
-			<option value=12>12</option>
-			<option value=13>13</option>
-			<option value=14>14</option>
-			<option value=15>15</option>
-			<option value=16>16</option>
-			<option value=17>17</option>
-			<option value=18>18</option>
-			<option value=19>19</option>
-			<option value=20>20</option>
-		</select>
- -->
-
-<!--
-		<select id="piTypeSelect">
-			<option>Surgical</option>
-			<option>Laser</option>
-		</select>
- -->
-
-		</br>
-<!--
-		<select id="methodSelect">
-			<option value="Fornix-based">Fornix-based</option>
-			<option value="Limbus-based">Limbus-based</option>
-		</select>
-
-		<select id="siteSelect">
-			<option value="Superior">Superior</option>
-			<option value="Superonasal">Superonasal</option>
-			<option value="Superotemporal">Superotemporal</option>
-		</select>
-
-        <select id="sizeSelect">
-            <option value="4x3">4x3</option>
-            <option value="5x2">5x2</option>
-        </select>
-
-        <select id="sclerostomySelect">
-            <option value="Punch">Punch</option>
-            <option value="Block">Block</option>
-        </select>
- -->
-
-        <!-- Input element -->
-        <!--
-        <input type="text" id="stenosisInput" value="0" />
-        <input type="text" id="typeInput" value="Calcified" />
-         -->
-
-<!--
-        <button onclick="console.log(drawingEdit.report()); return false;">Report</button>
-        <button onclick="var startDate = new Date(); grid.setDate(startDate); console.log(grid.date); return false;">Start</button>
-        <button onclick="console.log(grid.getGridX()); return false;">Grid</button>
-        <button onclick="console.log(drawingEdit.save()); return false;">Save</button>
- -->
 	<button onclick="zoom(); return false;">Toggle Zoom</button>
 
 

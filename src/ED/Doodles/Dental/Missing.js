@@ -1,29 +1,26 @@
 /**
- * Restoration
+ * Missing
  *
- * @class Restoration
+ * @class Missing
  * @property {String} className Name of doodle subclass
  * @param {Drawing} _drawing
  * @param {Object} _parameterJSON
  */
-ED.Restoration = function(_drawing, _parameterJSON) {
+ED.Missing = function(_drawing, _parameterJSON) {
 	// Set classname
-	this.className = "Restoration";
+	this.className = "Missing";
 
 	// Internal parameters
 	this.boxDimension = +200;
-	this.showPopup = true;
-
-	// Derived parameters
-	this.position = 'Occlusal';
+	this.showPopup = false;
 
 	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY', 'position'];
+	this.savedParameterArray = ['originX', 'originY'];
 
 	// Parameters in doodle control bar (parameter name: parameter label)
-	this.controlParameterArray = {
-		'position':'Position',
-	};
+// 	this.controlParameterArray = {
+// 		'position':'Position',
+// 	};
 
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _parameterJSON);
@@ -32,29 +29,22 @@ ED.Restoration = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Restoration.prototype = new ED.Doodle;
-ED.Restoration.prototype.constructor = ED.Restoration;
-ED.Restoration.superclass = ED.Doodle.prototype;
+ED.Missing.prototype = new ED.Doodle;
+ED.Missing.prototype.constructor = ED.Missing;
+ED.Missing.superclass = ED.Doodle.prototype;
 
 /**
  * Sets default dragging attributes
  */
-ED.Restoration.prototype.setPropertyDefaults = function() {
+ED.Missing.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
-
-	this.parameterValidationArray['position'] = {
-		kind: 'derived',
-		type: 'string',
-		list: ['Palatal', 'Occlusal', 'Buccal'],
-		animate: false
-	};
 }
 
 /**
  * Sets default parameters
  */
-ED.Restoration.prototype.setParameterDefaults = function() {
+ED.Missing.prototype.setParameterDefaults = function() {
 	// Get last added doodle
 	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
 
@@ -82,12 +72,12 @@ ED.Restoration.prototype.setParameterDefaults = function() {
  *
  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
  */
-ED.Restoration.prototype.draw = function(_point) {
+ED.Missing.prototype.draw = function(_point) {
 	// Get context
 	var ctx = this.drawing.context;
 
 	// Call draw method in superclass
-	ED.Restoration.superclass.draw.call(this, _point);
+	ED.Missing.superclass.draw.call(this, _point);
 
 	// Boundary path
 	ctx.beginPath();
@@ -107,20 +97,27 @@ ED.Restoration.prototype.draw = function(_point) {
 
 	// Non-boundary paths
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
-		var y = 0;
-		switch (this.position) {
-				case 'Palatal':
-					y = -9*d/24;
-					break;
-				case 'Occlusal':
-					y = 0;
-					break;
-				case 'Buccal':
-					y = 9*d/24;
-					break;
-			}
+		ctx.beginPath();
 
-		this.drawSpot(ctx, 0, y, 14, "red");
+		// Left arrow
+		ctx.moveTo(-d/2, 0);
+		ctx.lineTo(-d/10, 0);
+		ctx.lineTo(-d/6, -d/12);
+		ctx.moveTo(-d/10, 0);
+		ctx.lineTo(-d/6, +d/12);
+
+		// Right arrow
+		ctx.moveTo(+d/2, 0);
+		ctx.lineTo(+d/10, 0);
+		ctx.lineTo(+d/6, -d/12);
+		ctx.moveTo(+d/10, 0);
+		ctx.lineTo(+d/6, +d/12);
+
+		ctx.strokeStyle = "red";
+		ctx.lineWidth = 6;
+		ctx.stroke();
+
+
 	}
 
 	// Return value indicating successful hittest
