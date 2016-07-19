@@ -1,30 +1,22 @@
 /**
- * Restoration
+ * Implant
  *
- * @class Restoration
+ * @class Implant
  * @property {String} className Name of doodle subclass
  * @param {Drawing} _drawing
  * @param {Object} _parameterJSON
  */
-ED.Restoration = function(_drawing, _parameterJSON) {
+ED.Implant = function(_drawing, _parameterJSON) {
 	// Set classname
-	this.className = "Restoration";
+	this.className = "Implant";
 
 	// Internal parameters
 	this.boxDimension = +200;
-	this.showPopup = true;
+	this.showPopup = false;
 	this.toothNumber = 0;
 
-	// Derived parameters
-	this.position = 'Occlusal';
-
 	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY', 'position'];
-
-	// Parameters in doodle control bar (parameter name: parameter label)
-	this.controlParameterArray = {
-		'position':'Position',
-	};
+	this.savedParameterArray = ['originX', 'originY'];
 
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _parameterJSON);
@@ -33,30 +25,30 @@ ED.Restoration = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Restoration.prototype = new ED.Doodle;
-ED.Restoration.prototype.constructor = ED.Restoration;
-ED.Restoration.superclass = ED.Doodle.prototype;
+ED.Implant.prototype = new ED.Doodle;
+ED.Implant.prototype.constructor = ED.Implant;
+ED.Implant.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.Implant.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
 
 /**
  * Sets default dragging attributes
  */
-ED.Restoration.prototype.setPropertyDefaults = function() {
+ED.Implant.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
-
-	this.parameterValidationArray['position'] = {
-		kind: 'derived',
-		type: 'string',
-		list: ['Palatal', 'Occlusal', 'Buccal'],
-		animate: false
-	};
 }
 
 /**
  * Sets default parameters
  */
-ED.Restoration.prototype.setParameterDefaults = function() {
-	// Get chart doodle
+ED.Implant.prototype.setParameterDefaults = function() {
+	// Get last added doodle
 	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
 
 	// If there is a chart, interrogate box array to get position
@@ -84,12 +76,12 @@ ED.Restoration.prototype.setParameterDefaults = function() {
  *
  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
  */
-ED.Restoration.prototype.draw = function(_point) {
+ED.Implant.prototype.draw = function(_point) {
 	// Get context
 	var ctx = this.drawing.context;
 
 	// Call draw method in superclass
-	ED.Restoration.superclass.draw.call(this, _point);
+	ED.Implant.superclass.draw.call(this, _point);
 
 	// Boundary path
 	ctx.beginPath();
@@ -109,20 +101,20 @@ ED.Restoration.prototype.draw = function(_point) {
 
 	// Non-boundary paths
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
-		var y = 0;
-		switch (this.position) {
-				case 'Palatal':
-					y = -9*d/24;
-					break;
-				case 'Occlusal':
-					y = 0;
-					break;
-				case 'Buccal':
-					y = 9*d/24;
-					break;
-			}
 
-		this.drawSpot(ctx, 0, y, 14, "red");
+		// Line
+		ctx.beginPath();
+		ctx.moveTo(-d/2, 0);
+		ctx.lineTo(+d/2, 0);
+		ctx.strokeStyle = "gray";
+		ctx.stroke();
+
+		// Text
+		var label = "IMP";
+		ctx.font = "72px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, 22);
 	}
 
 	// Return value indicating successful hittest
@@ -134,18 +126,6 @@ ED.Restoration.prototype.draw = function(_point) {
  *
  * @returns {String} Description of doodle
  */
-ED.Restoration.prototype.description = function() {
-	var posText = ""
-	switch (this.position) {
-		case 'Palatal':
-			posText = "a palatal";
-			break;
-		case 'Occlusal':
-			posText = "an occlusal";
-			break;
-		case 'Buccal':
-			posText = "a buccal";
-			break;
-	}
-	return this.toothNumber.toString() + " has " + posText + " restoration£";
+ED.Implant.prototype.description = function() {
+	return this.toothNumber.toString() + " has an implant restored tooth£";
 }

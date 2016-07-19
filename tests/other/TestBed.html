@@ -62,9 +62,7 @@
                 drawingEdit.init();
 
                 // Set focus to canvasEdit element
-                canvasEdit.focus();
-
-
+                //canvasEdit.focus();
             }
 
 
@@ -106,16 +104,16 @@
 					//this.drawing.addDoodle('DendriticUlcer');
 					//this.drawing.addDoodle('Episcleritis');
 					this.drawing.addDoodle('Chart');
-// 					this.drawing.addDoodle('Restoration');
-// 					this.drawing.addDoodle('Missing');
-// 					this.drawing.addDoodle('Inlay');
+ 					//this.drawing.addDoodle('Fracture');
+					//this.drawing.addDoodle('Missing');
+					//this.drawing.addDoodle('Extracted');
 					this.drawing.deselectDoodles();
 
 					break;
 
                         case 'parameterChanged':
 					var doodle = _messageArray['object'].doodle;
-
+					addToReport();
 
 					break;
 
@@ -147,6 +145,7 @@
 					else {
 						propWindow.style.visibility = 'hidden';
 					}
+					addToReport();
 					break;
 
                         case 'doodleDeleted':
@@ -176,42 +175,63 @@
 							}
 						}
 					}
-
+					var propWindow = document.getElementById('canvasEdit_controls');
+					propWindow.style.visibility = 'hidden';
+					addToReport();
 					break;
 
                     }
                 }
             }
 
+		function addToReport()
+		{
+			// Get text from the applet and force into string type
+			var text = drawingEdit.report();
+
+			// Use a RegEx to comma and space
+			text = text.replace(/, /g, '');
+			text = text.replace(/£/g,'\n');
+
+			// Get reference to report textarea
+			var repText = document.getElementById('report');
+
+			// Add to existing text in text area
+			repText.innerHTML = text;
+		}
+
             </script>
     </head>
 
     <body onload="init();">
 
-        <!-- Doodle controls toolbar -->
-        <div class="ed-toolbar" >
-            <button class="ed-button" id="moveToFrontRPS" title="Move to front" onclick="drawingEdit.moveToFront(); return false;" ><img src="../../assets/img/old/moveToFront.gif"/></button>
-            <button class="ed-button" id="moveToBackRPS" title="Move to back" onclick="drawingEdit.moveToBack(); return false;" ><img src="../../assets/img/old/moveToBack.gif" /></button>
-            <button class="ed-button" id="flipVerRPS" title="Flip around vertical axis" onclick="drawingEdit.flipVer(); return false;" ><img src="../../assets/img/old/flipVer.gif" /></button>
-            <button class="ed-button" id="flipHorRPS" title="Flip around horizontal axis" onclick="drawingEdit.flipHor(); return false;" ><img src="../../assets/img/old/flipHor.gif" /></button>
-            <button class="ed-button" id="deleteSelectedDoodleRPS" title="Delete" onclick="drawingEdit.deleteSelectedDoodle(); return false;" ><img src="../../assets/img/old/deleteSelectedDoodle.gif" /></button>
-            <button class="ed-button" id="lockRPS" title="Lock" onclick="drawingEdit.lock(); return false;" ><img src="../../assets/img/old/lock.gif" /></button>
-            <button class="ed-button" id="unlockRPS" title="Unlock" onclick="drawingEdit.unlock(); return false;" ><img src="../../assets/img/old/unlock.gif" /></button>
+		<!-- Doodle controls toolbar -->
+		<div class="ed-toolbar" >
+			<button class="ed-button" id="moveToFrontRPS" title="Move to front" onclick="drawingEdit.moveToFront(); return false;" ><img src="../../assets/img/old/moveToFront.gif"/></button>
+			<button class="ed-button" id="moveToBackRPS" title="Move to back" onclick="drawingEdit.moveToBack(); return false;" ><img src="../../assets/img/old/moveToBack.gif" /></button>
+			<button class="ed-button" id="flipVerRPS" title="Flip around vertical axis" onclick="drawingEdit.flipVer(); return false;" ><img src="../../assets/img/old/flipVer.gif" /></button>
+			<button class="ed-button" id="flipHorRPS" title="Flip around horizontal axis" onclick="drawingEdit.flipHor(); return false;" ><img src="../../assets/img/old/flipHor.gif" /></button>
+			<button class="ed-button" id="deleteSelectedDoodleRPS" title="Delete" onclick="drawingEdit.deleteSelectedDoodle(); return false;" ><img src="../../assets/img/old/deleteSelectedDoodle.gif" /></button>
+			<button class="ed-button" id="lockRPS" title="Lock" onclick="drawingEdit.lock(); return false;" ><img src="../../assets/img/old/lock.gif" /></button>
+			<button class="ed-button" id="unlockRPS" title="Unlock" onclick="drawingEdit.unlock(); return false;" ><img src="../../assets/img/old/unlock.gif" /></button>
 
-            <label style="display:none;" ><input class="checkbox" type="checkbox" id="isSuturedSclerostomyRPS" onchange="drawingEdit.setSelectedDoodle(this, 'isSutured');return false;" />Sutured</label>
+			<label style="display:none;" ><input class="checkbox" type="checkbox" id="isSuturedSclerostomyRPS" onchange="drawingEdit.setSelectedDoodle(this, 'isSutured');return false;" />Sutured</label>
 
 
-            <br />
-        </div>
+			<br />
+		</div>
 
-        <!-- Doodle selection toolbar -->
-        <div class="ed-toolbar" id="canvasEdit1doodleToolbar">
-            <button id="LensRPS" class="ed-button" title="Normal" onclick="drawingEdit.addDoodle('Normal'); return false;" ><img src="../../assets/img/old/Normal.gif" /></button>
-            <button id="LensRPS" class="ed-button" title="Missing" onclick="drawingEdit.addDoodle('Missing'); return false;" ><img src="../../assets/img/old/Missing.gif" /></button>
-            <button id="LensRPS" class="ed-button" title="Restoration" onclick="drawingEdit.addDoodle('Restoration'); return false;" ><img src="../../assets/img/old/Restoration.gif" /></button>
-            <button id="LensRPS" class="ed-button" title="Inlay" onclick="drawingEdit.addDoodle('Inlay'); return false;" ><img src="../../assets/img/old/Inlay.gif" /></button>
-            <br />
-        </div>
+		<!-- Doodle selection toolbar -->
+		<div class="ed-toolbar" id="canvasEdit1doodleToolbar">
+			<button id="LensRPS" class="ed-button" title="Normal" onclick="drawingEdit.addDoodle('Normal'); return false;" ><img src="../../assets/img/old/Normal.gif" /></button>
+			<button id="LensRPS" class="ed-button" title="Missing" onclick="drawingEdit.addDoodle('Missing'); return false;" ><img src="../../assets/img/old/Missing.gif" /></button>
+			<button id="LensRPS" class="ed-button" title="Restoration" onclick="drawingEdit.addDoodle('Restoration'); return false;" ><img src="../../assets/img/old/Restoration.gif" /></button>
+			<button id="LensRPS" class="ed-button" title="Inlay" onclick="drawingEdit.addDoodle('Inlay'); return false;" ><img src="../../assets/img/old/Inlay.gif" /></button>
+			<button id="LensRPS" class="ed-button" title="Fracture" onclick="drawingEdit.addDoodle('Fracture'); return false;" ><img src="../../assets/img/old/Fracture.gif" /></button>
+			<button id="LensRPS" class="ed-button" title="Implant" onclick="drawingEdit.addDoodle('Implant'); return false;" ><img src="../../assets/img/old/Implant.gif" /></button>
+			<button id="LensRPS" class="ed-button" title="Extracted" onclick="drawingEdit.addDoodle('Extracted'); return false;" ><img src="../../assets/img/old/Extracted.gif" /></button>
+			<br />
+		</div>
 
 		<!-- Canvas -->
 		<div style="position:relative;">
@@ -223,13 +243,8 @@
 
 		</div>
 
-        <!-- Input element -->
-        <input type="text" id="axis" value="0" />
-
-        <button class="actbutton" onclick="console.log(drawingEdit.report()); return false;">Report</button>
-
-
-	<button onclick="zoom(); return false;">Toggle Zoom</button>
+		<!-- Report -->
+		<textarea id="report" style="color: #0000FF; height: 150px; width: 500px; border: none; font-size: 18px;"></textarea>
 
 
     </body>

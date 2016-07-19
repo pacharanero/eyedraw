@@ -13,6 +13,7 @@ ED.Missing = function(_drawing, _parameterJSON) {
 	// Internal parameters
 	this.boxDimension = +200;
 	this.showPopup = false;
+	this.toothNumber = 0;
 
 	// Saved parameters
 	this.savedParameterArray = ['originX', 'originY'];
@@ -55,6 +56,7 @@ ED.Missing.prototype.setParameterDefaults = function() {
 				var newOriginX = chartDoodle.boxArray[i].point.x;
 				var newOriginY = chartDoodle.boxArray[i].point.y;
 				chartDoodle.boxArray[i].occupied = true;
+				this.toothNumber = chartDoodle.boxArray[i].number;
 				break;
 			}
 		}
@@ -123,3 +125,13 @@ ED.Missing.prototype.draw = function(_point) {
 	// Return value indicating successful hittest
 	return this.isClicked;
 }
+
+/**
+ * Returns a string containing a text description of the doodle
+ *
+ * @returns {String} Description of doodle
+ */
+ED.Missing.prototype.description = function() {
+	return this.toothNumber.toString() + " is missing£";
+}
+

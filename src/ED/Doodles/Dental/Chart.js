@@ -60,14 +60,21 @@ ED.Chart.prototype.setPropertyDefaults = function() {
 	var xo = - (this.boxDimension * (this.boxNumber - 1)) / 2;
 	var yo = (- this.boxDimension - this.numDimension)/2;
 	for (var i = 0; i < this.boxNumber; i++) {
-		this.boxArray[i] = {point: new ED.Point(xo, yo), occupied: false};
+		this.boxArray[i] = {point: new ED.Point(xo, yo), occupied: false, number: 0};
 		xo = xo + this.boxDimension;
 	}
 	yo = yo + this.boxDimension + this.numDimension;
 	for (var i = this.boxNumber; i < 2 * this.boxNumber; i++) {
 		xo = xo - this.boxDimension;
-		this.boxArray[i] = {point: new ED.Point(xo, yo), occupied: false};
+		this.boxArray[i] = {point: new ED.Point(xo, yo), occupied: false, number: 0};
 	}
+
+	// Assign tooth numbers
+	var numArray = [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28,38,37,36,35,34,33,32,31,41,42,43,44,45,46,47,48];
+	for (var i = 0; i < 32; i ++) {
+		this.boxArray[i].number = numArray[i];
+	}
+
 }
 
 /**

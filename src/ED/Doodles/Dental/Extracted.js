@@ -1,29 +1,27 @@
 /**
- * Inlay
+ * Extracted
  *
- * @class Inlay
+ * @class Extracted
  * @property {String} className Name of doodle subclass
  * @param {Drawing} _drawing
  * @param {Object} _parameterJSON
  */
-ED.Inlay = function(_drawing, _parameterJSON) {
+ED.Extracted = function(_drawing, _parameterJSON) {
 	// Set classname
-	this.className = "Inlay";
+	this.className = "Extracted";
 
 	// Internal parameters
 	this.boxDimension = +200;
 	this.showPopup = true;
 	this.toothNumber = 0;
-
-	// Derived parameters
-	this.type = 'Temporary';
+	this.status = 'To be extracted';
 
 	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY', 'type'];
+	this.savedParameterArray = ['originX', 'originY', 'status'];
 
 	// Parameters in doodle control bar (parameter name: parameter label)
 	this.controlParameterArray = {
-		'type':'Type',
+		'status':'Status',
 	};
 
 	// Call superclass constructor
@@ -33,32 +31,28 @@ ED.Inlay = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Inlay.prototype = new ED.Doodle;
-ED.Inlay.prototype.constructor = ED.Inlay;
-ED.Inlay.superclass = ED.Doodle.prototype;
+ED.Extracted.prototype = new ED.Doodle;
+ED.Extracted.prototype.constructor = ED.Extracted;
+ED.Extracted.superclass = ED.Doodle.prototype;
 
 /**
  * Sets handle attributes
  */
-ED.Inlay.prototype.setHandles = function() {
+ED.Extracted.prototype.setHandles = function() {
 	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
 }
 
 /**
  * Sets default dragging attributes
  */
-ED.Inlay.prototype.setPropertyDefaults = function() {
+ED.Extracted.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
 
-	// Array of angles to snap to
-// 	var phi = Math.PI / 2;
-// 	this.anglesArray = [0, 1 * phi, 2 * phi, 3 * phi];
-
-	this.parameterValidationArray['type'] = {
+		this.parameterValidationArray['status'] = {
 		kind: 'derived',
 		type: 'string',
-		list: ['Temporary', 'Porcelain', 'Gold'],
+		list: ['To be extracted', 'Extracted'],
 		animate: false
 	};
 }
@@ -66,7 +60,7 @@ ED.Inlay.prototype.setPropertyDefaults = function() {
 /**
  * Sets default parameters
  */
-ED.Inlay.prototype.setParameterDefaults = function() {
+ED.Extracted.prototype.setParameterDefaults = function() {
 	// Get last added doodle
 	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
 
@@ -95,12 +89,12 @@ ED.Inlay.prototype.setParameterDefaults = function() {
  *
  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
  */
-ED.Inlay.prototype.draw = function(_point) {
+ED.Extracted.prototype.draw = function(_point) {
 	// Get context
 	var ctx = this.drawing.context;
 
 	// Call draw method in superclass
-	ED.Inlay.superclass.draw.call(this, _point);
+	ED.Extracted.superclass.draw.call(this, _point);
 
 	// Boundary path
 	ctx.beginPath();
@@ -120,56 +114,19 @@ ED.Inlay.prototype.draw = function(_point) {
 
 	// Non-boundary paths
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
+
+		// Line
 		ctx.beginPath();
+		ctx.moveTo(-d/2, +d/2);
+		ctx.lineTo(+d/2, -d/2);
 
-		// Curve
-		ctx.moveTo(-d/2, -d/3);
-		ctx.bezierCurveTo(-d/3, 0, 0, -d/4, 0, 0);
-		ctx.bezierCurveTo(0, +d/4, -d/3, 0, -d/2, +d/3);
-
-		// Hashed lines
-		var b = d/9;
-		ctx.moveTo(-4 * b, -2.1 * b);
-		ctx.lineTo(-4 * b, +2.1 * b);
-		ctx.moveTo(-3 * b, -1.55 * b);
-		ctx.lineTo(-3 * b, +1.55 * b);
-		ctx.moveTo(-2 * b, -1.2 * b);
-		ctx.lineTo(-2 * b, +1.2 * b);
-		ctx.moveTo(-1 * b, -1.1 * b);
-		ctx.lineTo(-1 * b, +1.1 * b);
-
-		// Stroke
-		ctx.strokeStyle = "black";
-		ctx.lineWidth = 6;
-		ctx.stroke();
-
-		// Text
-		var label = "";
-		switch (this.type) {
-			case 'Temporary':
-				label = "TEMP";
-				break;
-			case 'Porcelain':
-				label = "PL";
-				break;
-			case 'Gold':
-				label = "GL";
-				break;
+		if (this.status == "Extracted") {
+			ctx.moveTo(-d/2, -d/2);
+			ctx.lineTo(+d/2, +d/2);
 		}
-		ctx.font = "32px sans-serif";
-		var textWidth = ctx.measureText(label).width;
-		ctx.fillStyle = "black"
-		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
+		ctx.strokeStyle = "black";
+		ctx.stroke();
 	}
-
-
-	// Coordinates of handles (in canvas plane)
-	var point = new ED.Point(0, 0)
-	point.setWithPolars(d/1.414, 7 * Math.PI / 4);
-	this.handleArray[2].location = this.transform.transformPoint(point);
-
-	// Draw handles if selected
-	//if (this.isSelected && !this.isForDrawing) this.drawHandles(_point)
 
 	// Return value indicating successful hittest
 	return this.isClicked;
@@ -180,18 +137,11 @@ ED.Inlay.prototype.draw = function(_point) {
  *
  * @returns {String} Description of doodle
  */
-ED.Inlay.prototype.description = function() {
-	var posText = ""
-	switch (this.type) {
-		case 'Temporary':
-			posText = "temporary";
-			break;
-		case 'Porcelain':
-			posText = "porcelain";
-			break;
-		case 'Gold':
-			posText = "gold";
-			break;
+ED.Extracted.prototype.description = function() {
+	if (this.status == "Extracted") {
+		return this.toothNumber.toString() + " has been recently extracted£"
 	}
-	return this.toothNumber.toString() + " has a " + posText + " inlay£";
+	else {
+		return this.toothNumber.toString() + " is to be extracted£";
+	}
 }
