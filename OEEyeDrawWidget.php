@@ -229,6 +229,8 @@ class OEEyeDrawWidget extends CWidget
 	 */
 	public $divWrapper = true;
 
+	public $popupDisplaySide = 'right';
+
 	/**
 	 * Paths for the subdirectories for javascript, css and images
 	 * @var string
