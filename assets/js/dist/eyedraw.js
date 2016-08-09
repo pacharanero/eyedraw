@@ -12396,7 +12396,7 @@ ED.Canine.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Canine.prototype.description = function() {
-	return this.toothNumber.toString() + " is a retained canine£";
+	return this.toothNumber.toString() + " is a retained canine";
 }
 
 /**
