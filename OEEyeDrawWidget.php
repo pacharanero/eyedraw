@@ -348,7 +348,7 @@ class OEEyeDrawWidget extends CWidget
 				if (array_key_exists($doodleClassName, DoodleInfo::$titles)) {
 					$title = DoodleInfo::$titles[$doodleClassName];
 				} else {
-					$title = DoodleInfo::$titles['NONE'];
+					$title = $doodleClassName;
 				}
 				$finalToolBar[$row][$i] = array(
 					'title' => $title,
