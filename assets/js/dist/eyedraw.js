@@ -12763,10 +12763,10 @@ ED.Extracted.prototype.draw = function(_point) {
  */
 ED.Extracted.prototype.description = function() {
 	if (this.status == "Extracted") {
-		return this.toothNumber.toString() + " has been recently extracted£"
+		return this.toothNumber.toString() + " has been recently extracted";
 	}
 	else {
-		return this.toothNumber.toString() + " is to be extracted£";
+		return this.toothNumber.toString() + " is to be extracted";
 	}
 }
 
@@ -12892,7 +12892,7 @@ ED.Fracture.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Fracture.prototype.description = function() {
-	return this.toothNumber.toString() + " is fractured£";
+	return this.toothNumber.toString() + " is fractured";
 }
 
 /**
@@ -13024,7 +13024,7 @@ ED.Implant.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Implant.prototype.description = function() {
-	return this.toothNumber.toString() + " has an implant restored tooth£";
+	return this.toothNumber.toString() + " has an implant restored tooth";
 }
 
 /**
@@ -13222,7 +13222,7 @@ ED.Inlay.prototype.description = function() {
 			posText = "gold";
 			break;
 	}
-	return this.toothNumber.toString() + " has a " + posText + " inlay£";
+	return this.toothNumber.toString() + " has a " + posText + " inlay";
 }
 
 /**
@@ -13359,7 +13359,7 @@ ED.Missing.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Missing.prototype.description = function() {
-	return this.toothNumber.toString() + " is missing£";
+	return this.toothNumber.toString() + " is missing";
 }
 
 
@@ -13399,6 +13399,7 @@ ED.Normal.superclass = ED.Doodle.prototype;
 ED.Normal.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
+	this.willReport = false;
 }
 
 /**
@@ -13612,7 +13613,7 @@ ED.Restoration.prototype.description = function() {
 			posText = "a buccal";
 			break;
 	}
-	return this.toothNumber.toString() + " has " + posText + " restoration£";
+	return this.toothNumber.toString() + " has " + posText + " restoration";
 }
 
 /**
@@ -13762,7 +13763,7 @@ ED.Rotation.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Rotation.prototype.description = function() {
-	return this.toothNumber.toString() + " is rotated distally£";
+	return this.toothNumber.toString() + " is rotated distally";
 }
 
 /**

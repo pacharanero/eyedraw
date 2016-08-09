@@ -132,6 +132,6 @@ ED.Missing.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Missing.prototype.description = function() {
-	return this.toothNumber.toString() + " is missing£";
+	return this.toothNumber.toString() + " is missing";
 }
 

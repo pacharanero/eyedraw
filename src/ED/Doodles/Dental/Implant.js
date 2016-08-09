@@ -127,5 +127,5 @@ ED.Implant.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Implant.prototype.description = function() {
-	return this.toothNumber.toString() + " has an implant restored tooth£";
+	return this.toothNumber.toString() + " has an implant restored tooth";
 }

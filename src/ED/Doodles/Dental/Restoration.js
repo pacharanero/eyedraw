@@ -147,5 +147,5 @@ ED.Restoration.prototype.description = function() {
 			posText = "a buccal";
 			break;
 	}
-	return this.toothNumber.toString() + " has " + posText + " restoration£";
+	return this.toothNumber.toString() + " has " + posText + " restoration";
 }

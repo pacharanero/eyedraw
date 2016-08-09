@@ -139,9 +139,9 @@ ED.Extracted.prototype.draw = function(_point) {
  */
 ED.Extracted.prototype.description = function() {
 	if (this.status == "Extracted") {
-		return this.toothNumber.toString() + " has been recently extracted£"
+		return this.toothNumber.toString() + " has been recently extracted";
 	}
 	else {
-		return this.toothNumber.toString() + " is to be extracted£";
+		return this.toothNumber.toString() + " is to be extracted";
 	}
 }

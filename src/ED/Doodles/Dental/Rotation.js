@@ -145,5 +145,5 @@ ED.Rotation.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Rotation.prototype.description = function() {
-	return this.toothNumber.toString() + " is rotated distally£";
+	return this.toothNumber.toString() + " is rotated distally";
 }

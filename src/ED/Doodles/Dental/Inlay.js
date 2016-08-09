@@ -193,5 +193,5 @@ ED.Inlay.prototype.description = function() {
 			posText = "gold";
 			break;
 	}
-	return this.toothNumber.toString() + " has a " + posText + " inlay£";
+	return this.toothNumber.toString() + " has a " + posText + " inlay";
 }

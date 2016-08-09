@@ -308,7 +308,7 @@ ED.Controller = (function() {
 		this.canvas = document.getElementById(properties.canvasId);
 		this.input = document.getElementById(properties.inputId);
 		this.container = $(this.canvas).closest('.ed-widget');
-		this.previousReport = '';
+		this.previousReport = {};
 
 		this.Checker = Checker || ED.Checker;
 		this.drawing = drawing || this.createDrawing();
@@ -496,8 +496,7 @@ ED.Controller = (function() {
 			this.input.value = this.drawing.save();
 		}
 		if(this.properties.autoReport){
-			var outputElement = document.getElementById(this.properties.autoReport);
-			this.autoReport(outputElement);
+			this.runAutoReport(this.properties.autoReport);
 		}
 	};
 
@@ -692,8 +691,7 @@ ED.Controller = (function() {
 		}
 
 		if(this.properties.autoReport){
-			var outputElement = document.getElementById(this.properties.autoReport);
-			this.autoReport(outputElement);
+			this.runAutoReport(this.properties.autoReport);
 		}
 
 		// Mark drawing object as ready
@@ -719,33 +717,49 @@ ED.Controller = (function() {
 		this.saveDrawingToInputField();
 	};
 
+	Controller.prototype.runAutoReport = function(ids) {
+		if (ids.constructor !== Array) {
+			ids = new Array(ids);
+		}
+		for (var i in ids) {
+			var element = document.getElementById(ids[i]);
+			if (element) {
+				this.autoReport(ids[i], element);
+			} else {
+				ED.errorHandler('ED.Controller', 'runAutoReport', 'Invalid document element id ' + ids[i]);
+			}
+		}
+	};
+
 	/**
 	 * Automatically calls the drawings report
 	 */
-	Controller.prototype.autoReport = function(outputElement) {
+	Controller.prototype.autoReport = function(id, outputElement) {
 		var report = this.drawing.report();
+
 		if(report){
+
 			report = report.replace(/, /g,"\n");
 			var output = '';
 			var existing = outputElement.value;
 
 			if(existing.match(report)){
 				outputElement.rows = (existing.match(/\n/g) || []).length + 1;
-				this.previousReport = report;
+				this.previousReport[id] = report;
 				return;
 			}
 
-			if(this.previousReport){
-				output = existing.replace(this.previousReport, report);
+			if(this.previousReport[id]){
+				output = existing.replace(this.previousReport[id], report);
 			} else {
-				if(!existing.match(/^[\n ]$/)){
+				if(existing.length && !existing.match(/^[\n ]$/)){
 					existing += "\n";
 				}
 				output = existing + report;
 			}
 			outputElement.value = output;
 			outputElement.rows = (output.match(/\n/g) || []).length + 1;
-			this.previousReport = report;
+			this.previousReport[id] = report;
 		}
 	};
 

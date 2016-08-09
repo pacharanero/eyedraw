@@ -120,5 +120,5 @@ ED.Fracture.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Fracture.prototype.description = function() {
-	return this.toothNumber.toString() + " is fractured£";
+	return this.toothNumber.toString() + " is fractured";
 }

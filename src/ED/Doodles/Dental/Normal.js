@@ -34,6 +34,7 @@ ED.Normal.superclass = ED.Doodle.prototype;
 ED.Normal.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
+	this.willReport = false;
 }
 
 /**
