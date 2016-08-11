@@ -13239,16 +13239,17 @@ ED.Missing = function(_drawing, _parameterJSON) {
 
 	// Internal parameters
 	this.boxDimension = +200;
-	this.showPopup = false;
+	this.showPopup = true;
 	this.toothNumber = 0;
+	this.gapClosed = false;
 
 	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY'];
+	this.savedParameterArray = ['originX', 'originY', 'gapClosed'];
 
 	// Parameters in doodle control bar (parameter name: parameter label)
-// 	this.controlParameterArray = {
-// 		'position':'Position',
-// 	};
+	this.controlParameterArray = {
+		'gapClosed':'Gap Closed',
+	};
 
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _parameterJSON);
@@ -13267,6 +13268,13 @@ ED.Missing.superclass = ED.Doodle.prototype;
 ED.Missing.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
+
+	// Add complete validation arrays for derived parameters
+	this.parameterValidationArray['gapClosed'] = {
+		kind: 'derived',
+		type: 'bool',
+		display: true
+	};
 }
 
 /**
@@ -13328,25 +13336,28 @@ ED.Missing.prototype.draw = function(_point) {
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
 		ctx.beginPath();
 
-		// Left arrow
+		// Line
 		ctx.moveTo(-d/2, 0);
-		ctx.lineTo(-d/10, 0);
-		ctx.lineTo(-d/6, -d/12);
-		ctx.moveTo(-d/10, 0);
-		ctx.lineTo(-d/6, +d/12);
+		ctx.lineTo(+d/2, 0);
 
-		// Right arrow
-		ctx.moveTo(+d/2, 0);
-		ctx.lineTo(+d/10, 0);
-		ctx.lineTo(+d/6, -d/12);
-		ctx.moveTo(+d/10, 0);
-		ctx.lineTo(+d/6, +d/12);
+		if (this.gapClosed) {
+
+			// Left arrow
+			ctx.moveTo(-d/10, 0);
+			ctx.lineTo(-d/6, -d/12);
+			ctx.moveTo(-d/10, 0);
+			ctx.lineTo(-d/6, +d/12);
+
+			// Right arrow
+			ctx.moveTo(+d/10, 0);
+			ctx.lineTo(+d/6, -d/12);
+			ctx.moveTo(+d/10, 0);
+			ctx.lineTo(+d/6, +d/12);
+		}
 
 		ctx.strokeStyle = "red";
 		ctx.lineWidth = 6;
 		ctx.stroke();
-
-
 	}
 
 	// Return value indicating successful hittest
