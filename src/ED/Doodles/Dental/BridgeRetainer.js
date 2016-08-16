@@ -1,27 +1,29 @@
 /**
- * Missing
+ * BridgeRetainer
  *
- * @class Missing
+ * @class BridgeRetainer
  * @property {String} className Name of doodle subclass
  * @param {Drawing} _drawing
  * @param {Object} _parameterJSON
  */
-ED.Missing = function(_drawing, _parameterJSON) {
+ED.BridgeRetainer = function(_drawing, _parameterJSON) {
 	// Set classname
-	this.className = "Missing";
+	this.className = "BridgeRetainer";
 
 	// Internal parameters
 	this.boxDimension = +200;
 	this.showPopup = true;
 	this.toothNumber = 0;
-	this.gapClosed = false;
+
+	// Derived parameters
+	this.type = 'Temporary';
 
 	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY', 'gapClosed'];
+	this.savedParameterArray = ['originX', 'originY', 'type'];
 
 	// Parameters in doodle control bar (parameter name: parameter label)
 	this.controlParameterArray = {
-		'gapClosed':'Gap Closed',
+		'type':'Type',
 	};
 
 	// Call superclass constructor
@@ -31,29 +33,35 @@ ED.Missing = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Missing.prototype = new ED.Doodle;
-ED.Missing.prototype.constructor = ED.Missing;
-ED.Missing.superclass = ED.Doodle.prototype;
+ED.BridgeRetainer.prototype = new ED.Doodle;
+ED.BridgeRetainer.prototype.constructor = ED.BridgeRetainer;
+ED.BridgeRetainer.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.BridgeRetainer.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
 
 /**
  * Sets default dragging attributes
  */
-ED.Missing.prototype.setPropertyDefaults = function() {
+ED.BridgeRetainer.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
-	this.isRotatable = false;
 
-	// Add complete validation arrays for derived parameters
-	this.parameterValidationArray['gapClosed'] = {
+	this.parameterValidationArray['type'] = {
 		kind: 'derived',
-		type: 'bool',
-		display: true
+		type: 'string',
+		list: ['Temporary', 'Porcelain', 'Metal'],
+		animate: false
 	};
 }
 
 /**
  * Sets default parameters
  */
-ED.Missing.prototype.setParameterDefaults = function() {
+ED.BridgeRetainer.prototype.setParameterDefaults = function() {
 	// Get last added doodle
 	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
 
@@ -82,12 +90,12 @@ ED.Missing.prototype.setParameterDefaults = function() {
  *
  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
  */
-ED.Missing.prototype.draw = function(_point) {
+ED.BridgeRetainer.prototype.draw = function(_point) {
 	// Get context
 	var ctx = this.drawing.context;
 
 	// Call draw method in superclass
-	ED.Missing.superclass.draw.call(this, _point);
+	ED.BridgeRetainer.superclass.draw.call(this, _point);
 
 	// Boundary path
 	ctx.beginPath();
@@ -107,30 +115,13 @@ ED.Missing.prototype.draw = function(_point) {
 
 	// Non-boundary paths
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
-		ctx.beginPath();
 
-		// Line
-		ctx.moveTo(-d/2, 0);
-		ctx.lineTo(+d/2, 0);
-
-		if (this.gapClosed) {
-
-			// Left arrow
-			ctx.moveTo(-d/10, 0);
-			ctx.lineTo(-d/6, -d/12);
-			ctx.moveTo(-d/10, 0);
-			ctx.lineTo(-d/6, +d/12);
-
-			// Right arrow
-			ctx.moveTo(+d/10, 0);
-			ctx.lineTo(+d/6, -d/12);
-			ctx.moveTo(+d/10, 0);
-			ctx.lineTo(+d/6, +d/12);
-		}
-
-		ctx.strokeStyle = "red";
-		ctx.lineWidth = 6;
-		ctx.stroke();
+		// Text
+		var label = "Br R";
+		ctx.font = "72px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, 22);
 	}
 
 	// Return value indicating successful hittest
@@ -142,8 +133,19 @@ ED.Missing.prototype.draw = function(_point) {
  *
  * @returns {String} Description of doodle
  */
-ED.Missing.prototype.description = function() {
-	var text = this.gapClosed ? " and the gap is closed":"";
-	return this.toothNumber.toString() + " is missing" + text;
+ED.BridgeRetainer.prototype.description = function() {
+	var posText = ""
+	switch (this.type) {
+		case 'Temporary':
+			posText = "temporary";
+			break;
+		case 'Porcelain':
+			posText = "porcelain";
+			break;
+		case 'Metal':
+			posText = "metal";
+			break;
+	}
+	//return this.toothNumber.toString() + " has a " + posText + " bridge pontic";
+	return "";
 }
-

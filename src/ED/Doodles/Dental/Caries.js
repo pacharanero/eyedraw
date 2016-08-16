@@ -1,22 +1,19 @@
 /**
- * Restoration
+ * Caries
  *
- * @class Restoration
+ * @class Caries
  * @property {String} className Name of doodle subclass
  * @param {Drawing} _drawing
  * @param {Object} _parameterJSON
  */
-ED.Restoration = function(_drawing, _parameterJSON) {
+ED.Caries = function(_drawing, _parameterJSON) {
 	// Set classname
-	this.className = "Restoration";
+	this.className = "Caries";
 
 	// Internal parameters
 	this.boxDimension = +200;
-	this.showPopup = true;
+	this.showPopup = false;
 	this.toothNumber = 0;
-
-	// Derived parameters
-	this.type = 'Temporary';
 
 	// Other parameters
 	this.locations = 16;	// binary flags indicating location of lesions
@@ -25,12 +22,8 @@ ED.Restoration = function(_drawing, _parameterJSON) {
 	this.flags = {distal:1, buccal:2, mesial:4, palatal:8, occlusal:16};
 
 	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY', 'type', 'locations'];
+	this.savedParameterArray = ['originX', 'originY', 'locations'];
 
-	// Parameters in doodle control bar (parameter name: parameter label)
-	this.controlParameterArray = {
-		'type':'Type',
-	};
 
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _parameterJSON);
@@ -39,35 +32,28 @@ ED.Restoration = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Restoration.prototype = new ED.Doodle;
-ED.Restoration.prototype.constructor = ED.Restoration;
-ED.Restoration.superclass = ED.Doodle.prototype;
+ED.Caries.prototype = new ED.Doodle;
+ED.Caries.prototype.constructor = ED.Caries;
+ED.Caries.superclass = ED.Doodle.prototype;
 
 /**
  * Sets handle attributes
  */
-ED.Restoration.prototype.setHandles = function() {
+ED.Caries.prototype.setHandles = function() {
 	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
 }
 
 /**
  * Sets default dragging attributes
  */
-ED.Restoration.prototype.setPropertyDefaults = function() {
+ED.Caries.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
-
-	this.parameterValidationArray['type'] = {
-		kind: 'derived',
-		type: 'string',
-		list: ['Temporary', 'Amalgam', 'GIC', 'Composite'],
-		animate: false
-	};
 }
 
 /**
  * Sets default parameters
  */
-ED.Restoration.prototype.setParameterDefaults = function() {
+ED.Caries.prototype.setParameterDefaults = function() {
 	// Get last added doodle
 	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
 
@@ -95,7 +81,7 @@ ED.Restoration.prototype.setParameterDefaults = function() {
 }
 
 // Method called for notification
-ED.Restoration.prototype.callBack = function(_messageArray) {
+ED.Caries.prototype.callBack = function(_messageArray) {
 	switch (_messageArray['eventName'])
 	{
 		// Eye draw image files all loaded
@@ -136,7 +122,7 @@ ED.Restoration.prototype.callBack = function(_messageArray) {
  * @value {Undefined} _value Value of parameter to calculate
  * @returns {Array} Associative array of values of dependent parameters
  */
-/*ED.Restoration.prototype.dependentParameterValues = function(_parameter, _value) {
+/*ED.Caries.prototype.dependentParameterValues = function(_parameter, _value) {
 	var returnArray = new Array();
 
 	switch (_parameter) {
@@ -175,12 +161,12 @@ ED.Restoration.prototype.callBack = function(_messageArray) {
  *
  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
  */
-ED.Restoration.prototype.draw = function(_point) {
+ED.Caries.prototype.draw = function(_point) {
 	// Get context
 	var ctx = this.drawing.context;
 
 	// Call draw method in superclass
-	ED.Restoration.superclass.draw.call(this, _point);
+	ED.Caries.superclass.draw.call(this, _point);
 
 	// Boundary path
 	ctx.beginPath();
@@ -203,11 +189,11 @@ ED.Restoration.prototype.draw = function(_point) {
 		ctx.beginPath();
 
 		// Locations
-		if (this.locations & this.flags['distal']) this.drawSpot(ctx, -76, 0, 14, "black");
-		if (this.locations & this.flags['buccal']) this.drawSpot(ctx, 0, -76, 14, "black");
-		if (this.locations & this.flags['mesial']) this.drawSpot(ctx, 76, 0, 14, "black");
-		if (this.locations & this.flags['palatal']) this.drawSpot(ctx, 0, 76, 14, "black");
-		if (this.locations & this.flags['occlusal']) this.drawSpot(ctx, 0, 0, 14, "black");
+		if (this.locations & this.flags['distal']) this.drawSpot(ctx, -76, 0, 14, "red");
+		if (this.locations & this.flags['buccal']) this.drawSpot(ctx, 0, -76, 14, "red");
+		if (this.locations & this.flags['mesial']) this.drawSpot(ctx, 76, 0, 14, "red");
+		if (this.locations & this.flags['palatal']) this.drawSpot(ctx, 0, 76, 14, "red");
+		if (this.locations & this.flags['occlusal']) this.drawSpot(ctx, 0, 0, 14, "red");
 
 
 		/*
@@ -235,25 +221,25 @@ ED.Restoration.prototype.draw = function(_point) {
 		*/
 
 		// Text
-		var label = "";
-		switch (this.type) {
-			case 'Temporary':
-				label = "TEMP";
-				break;
-			case 'Amalgam':
-				label = "Aml";
-				break;
-			case 'GIC':
-				label = "GIC";
-				break;
-			case 'Composite':
-				label = "Com";
-				break;
-		}
-		ctx.font = "32px sans-serif";
-		var textWidth = ctx.measureText(label).width;
-		ctx.fillStyle = "black"
-		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
+// 		var label = "";
+// 		switch (this.type) {
+// 			case 'Temporary':
+// 				label = "TEMP";
+// 				break;
+// 			case 'Amalgam':
+// 				label = "Aml";
+// 				break;
+// 			case 'GIC':
+// 				label = "GIC";
+// 				break;
+// 			case 'Composite':
+// 				label = "Com";
+// 				break;
+// 		}
+// 		ctx.font = "32px sans-serif";
+// 		var textWidth = ctx.measureText(label).width;
+// 		ctx.fillStyle = "black"
+// 		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
 
 
 	}
@@ -276,19 +262,13 @@ ED.Restoration.prototype.draw = function(_point) {
  *
  * @returns {String} Description of doodle
  */
-ED.Restoration.prototype.description = function() {
+ED.Caries.prototype.description = function() {
 	var posText = ""
-	switch (this.type) {
-		case 'Temporary':
-			posText = "temporary";
-			break;
-		case 'Porcelain':
-			posText = "porcelain";
-			break;
-		case 'Gold':
-			posText = "gold";
-			break;
-	}
-	//return this.toothNumber.toString() + " has a " + posText + " inlay";
-	return "";
+	if (this.locations & this.flags['distal']) posText += "distal ";
+	if (this.locations & this.flags['buccal']) posText += "buccal ";
+	if (this.locations & this.flags['mesial']) posText += "mesial ";
+	if (this.locations & this.flags['palatal']) posText += "palatal ";
+	if (this.locations & this.flags['occlusal']) posText += "occlusal ";
+
+	return this.toothNumber.toString() + " has caries in the " + posText + "position";
 }

@@ -79,12 +79,12 @@ ED.Patch.prototype.setParameterDefaults = function() {
 	this.height = 200;
 
 	this.setParameterFromString('material', 'Sclera');
-	
+
 	// Position over tube if present
 	var doodle = this.drawing.lastDoodleOfClass("Tube");
 	if (doodle) {
 		var isRE = (this.drawing.eye == ED.eye.Right);
-		
+
 		switch (doodle.platePosition) {
 			case 'STQ':
 				this.originX = isRE?-350:+350;
@@ -105,7 +105,7 @@ ED.Patch.prototype.setParameterDefaults = function() {
 				this.originX = isRE?-350:+350;
 				this.originY = +350;
 				this.rotation = (isRE?5:3) * Math.PI/4;
-				break;	
+				break;
 		}
 	}
 
@@ -183,5 +183,6 @@ ED.Patch.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Patch.prototype.description = function() {
-	return this.material + " patch";
+	//return this.material + " patch";
+	return "";
 }

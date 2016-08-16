@@ -12267,6 +12267,310 @@ ED.Wheeze.prototype.description = function() {
 	return 'wheeze' + lobe + lung;
 }
 /**
+ * BridgePontic
+ *
+ * @class BridgePontic
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Object} _parameterJSON
+ */
+ED.BridgePontic = function(_drawing, _parameterJSON) {
+	// Set classname
+	this.className = "BridgePontic";
+
+	// Internal parameters
+	this.boxDimension = +200;
+	this.showPopup = true;
+	this.toothNumber = 0;
+
+	// Derived parameters
+	this.type = 'Temporary';
+
+	// Saved parameters
+	this.savedParameterArray = ['originX', 'originY', 'type'];
+
+	// Parameters in doodle control bar (parameter name: parameter label)
+	this.controlParameterArray = {
+		'type':'Type',
+	};
+
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _parameterJSON);
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.BridgePontic.prototype = new ED.Doodle;
+ED.BridgePontic.prototype.constructor = ED.BridgePontic;
+ED.BridgePontic.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.BridgePontic.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
+
+/**
+ * Sets default dragging attributes
+ */
+ED.BridgePontic.prototype.setPropertyDefaults = function() {
+	this.isMoveable = false;
+
+	this.parameterValidationArray['type'] = {
+		kind: 'derived',
+		type: 'string',
+		list: ['Temporary', 'Porcelain', 'Metal'],
+		animate: false
+	};
+}
+
+/**
+ * Sets default parameters
+ */
+ED.BridgePontic.prototype.setParameterDefaults = function() {
+	// Get last added doodle
+	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+	// If there is a chart, interrogate box array to get position
+	if (chartDoodle) {
+		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+			if (!chartDoodle.boxArray[i].occupied) {
+				var newOriginX = chartDoodle.boxArray[i].point.x;
+				var newOriginY = chartDoodle.boxArray[i].point.y;
+				chartDoodle.boxArray[i].occupied = true;
+				this.toothNumber = chartDoodle.boxArray[i].number;
+				break;
+			}
+		}
+	}
+	else {
+		var newOriginX = 0;
+		var newOriginY = -400;
+	}
+	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
+	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.BridgePontic.prototype.draw = function(_point) {
+	// Get context
+	var ctx = this.drawing.context;
+
+	// Call draw method in superclass
+	ED.BridgePontic.superclass.draw.call(this, _point);
+
+	// Boundary path
+	ctx.beginPath();
+
+	// Boundary
+	var d = this.boxDimension;
+	ctx.rect(-d/2, -d/2, d, d);
+	var lt = 6;
+
+	// Set line attribute
+	ctx.lineWidth = lt;
+	ctx.strokeStyle = "blue";
+	ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+
+	// Non-boundary paths
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
+
+		// Text
+		var label = "Br P";
+		ctx.font = "72px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, 22);
+	}
+
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
+ * Returns a string containing a text description of the doodle
+ *
+ * @returns {String} Description of doodle
+ */
+ED.BridgePontic.prototype.description = function() {
+	var posText = ""
+	switch (this.type) {
+		case 'Temporary':
+			posText = "temporary";
+			break;
+		case 'Porcelain':
+			posText = "porcelain";
+			break;
+		case 'Metal':
+			posText = "metal";
+			break;
+	}
+	//return this.toothNumber.toString() + " has a " + posText + " bridge pontic";
+	return "";
+}
+
+/**
+ * BridgeRetainer
+ *
+ * @class BridgeRetainer
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Object} _parameterJSON
+ */
+ED.BridgeRetainer = function(_drawing, _parameterJSON) {
+	// Set classname
+	this.className = "BridgeRetainer";
+
+	// Internal parameters
+	this.boxDimension = +200;
+	this.showPopup = true;
+	this.toothNumber = 0;
+
+	// Derived parameters
+	this.type = 'Temporary';
+
+	// Saved parameters
+	this.savedParameterArray = ['originX', 'originY', 'type'];
+
+	// Parameters in doodle control bar (parameter name: parameter label)
+	this.controlParameterArray = {
+		'type':'Type',
+	};
+
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _parameterJSON);
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.BridgeRetainer.prototype = new ED.Doodle;
+ED.BridgeRetainer.prototype.constructor = ED.BridgeRetainer;
+ED.BridgeRetainer.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.BridgeRetainer.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
+
+/**
+ * Sets default dragging attributes
+ */
+ED.BridgeRetainer.prototype.setPropertyDefaults = function() {
+	this.isMoveable = false;
+
+	this.parameterValidationArray['type'] = {
+		kind: 'derived',
+		type: 'string',
+		list: ['Temporary', 'Porcelain', 'Metal'],
+		animate: false
+	};
+}
+
+/**
+ * Sets default parameters
+ */
+ED.BridgeRetainer.prototype.setParameterDefaults = function() {
+	// Get last added doodle
+	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+	// If there is a chart, interrogate box array to get position
+	if (chartDoodle) {
+		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+			if (!chartDoodle.boxArray[i].occupied) {
+				var newOriginX = chartDoodle.boxArray[i].point.x;
+				var newOriginY = chartDoodle.boxArray[i].point.y;
+				chartDoodle.boxArray[i].occupied = true;
+				this.toothNumber = chartDoodle.boxArray[i].number;
+				break;
+			}
+		}
+	}
+	else {
+		var newOriginX = 0;
+		var newOriginY = -400;
+	}
+	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
+	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.BridgeRetainer.prototype.draw = function(_point) {
+	// Get context
+	var ctx = this.drawing.context;
+
+	// Call draw method in superclass
+	ED.BridgeRetainer.superclass.draw.call(this, _point);
+
+	// Boundary path
+	ctx.beginPath();
+
+	// Boundary
+	var d = this.boxDimension;
+	ctx.rect(-d/2, -d/2, d, d);
+	var lt = 6;
+
+	// Set line attribute
+	ctx.lineWidth = lt;
+	ctx.strokeStyle = "blue";
+	ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+
+	// Non-boundary paths
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
+
+		// Text
+		var label = "Br R";
+		ctx.font = "72px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, 22);
+	}
+
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
+ * Returns a string containing a text description of the doodle
+ *
+ * @returns {String} Description of doodle
+ */
+ED.BridgeRetainer.prototype.description = function() {
+	var posText = ""
+	switch (this.type) {
+		case 'Temporary':
+			posText = "temporary";
+			break;
+		case 'Porcelain':
+			posText = "porcelain";
+			break;
+		case 'Metal':
+			posText = "metal";
+			break;
+	}
+	//return this.toothNumber.toString() + " has a " + posText + " bridge pontic";
+	return "";
+}
+
+/**
  * Canine
  *
  * @class Canine
@@ -12397,6 +12701,281 @@ ED.Canine.prototype.draw = function(_point) {
  */
 ED.Canine.prototype.description = function() {
 	return this.toothNumber.toString() + " is a retained canine";
+}
+
+/**
+ * Caries
+ *
+ * @class Caries
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Object} _parameterJSON
+ */
+ED.Caries = function(_drawing, _parameterJSON) {
+	// Set classname
+	this.className = "Caries";
+
+	// Internal parameters
+	this.boxDimension = +200;
+	this.showPopup = false;
+	this.toothNumber = 0;
+
+	// Other parameters
+	this.locations = 16;	// binary flags indicating location of lesions
+
+	// Flag masks
+	this.flags = {distal:1, buccal:2, mesial:4, palatal:8, occlusal:16};
+
+	// Saved parameters
+	this.savedParameterArray = ['originX', 'originY', 'locations'];
+
+
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _parameterJSON);
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.Caries.prototype = new ED.Doodle;
+ED.Caries.prototype.constructor = ED.Caries;
+ED.Caries.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.Caries.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
+
+/**
+ * Sets default dragging attributes
+ */
+ED.Caries.prototype.setPropertyDefaults = function() {
+	this.isMoveable = false;
+}
+
+/**
+ * Sets default parameters
+ */
+ED.Caries.prototype.setParameterDefaults = function() {
+	// Get last added doodle
+	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+	// If there is a chart, interrogate box array to get position
+	if (chartDoodle) {
+		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+			if (!chartDoodle.boxArray[i].occupied) {
+				var newOriginX = chartDoodle.boxArray[i].point.x;
+				var newOriginY = chartDoodle.boxArray[i].point.y;
+				chartDoodle.boxArray[i].occupied = true;
+				this.toothNumber = chartDoodle.boxArray[i].number;
+				break;
+			}
+		}
+	}
+	else {
+		var newOriginX = 0;
+		var newOriginY = -400;
+	}
+	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
+	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+
+	 // Register for notifications with drawing object to respond to clicks
+    this.drawing.registerForNotifications(this, 'callBack', []);
+}
+
+// Method called for notification
+ED.Caries.prototype.callBack = function(_messageArray) {
+	switch (_messageArray['eventName'])
+	{
+		// Eye draw image files all loaded
+		case 'mousedown':
+		if (this.isSelected) {
+
+			// Get mouse coordinates
+			var x = _messageArray['object'].point.x - (this.originX + 1500) * 60/200 - 20;
+			var y = _messageArray['object'].point.y - 70;
+
+			// Work out which area
+			if (x <= 15) {
+				this.locations = this.locations ^ this.flags['distal'];
+			}
+			else if (x >= 45) {
+				this.locations = this.locations ^ this.flags['mesial'];
+			}
+			else if (y <= 15)  {
+				this.locations = this.locations ^ this.flags['buccal'];
+			}
+			else if (y > 15 && y < 45)  {
+				this.locations = this.locations ^ this.flags['occlusal'];
+			}
+			else if (y >= 45)  {
+				this.locations = this.locations ^ this.flags['palatal'];
+			}
+		}
+
+		break;
+	}
+}
+
+/**
+ * Calculates values of dependent parameters. This function embodies the relationship between simple and derived parameters
+ * The returned parameters are animated if the 'animate' property in the parameterValidationArray is set to true
+ *
+ * @param {String} _parameter Name of parameter that has changed
+ * @value {Undefined} _value Value of parameter to calculate
+ * @returns {Array} Associative array of values of dependent parameters
+ */
+/*ED.Caries.prototype.dependentParameterValues = function(_parameter, _value) {
+	var returnArray = new Array();
+
+	switch (_parameter) {
+		case 'rotation':
+			console.log(_value * 180/Math.PI);
+
+			break;
+
+// 		case 'pupilSize':
+// 			switch (_value) {
+// 				case 'Large':
+// 					if (this.apexY < -200) returnValue = this.apexY;
+// 					else returnArray['apexY'] = -260;
+// 					break;
+// 				case 'Medium':
+// 					if (this.apexY >= -200 && this.apexY < -100) returnValue = this.apexY;
+// 					else returnArray['apexY'] = -200;
+// 					break;
+// 				case 'Small':
+// 					if (this.apexY >= -100) returnValue = this.apexY;
+// 					else returnArray['apexY'] = -100;
+// 					break;
+// 			}
+// 			break;
+// 		case 'coloboma':
+// 			this.isRotatable = _value == "true"?true:false;
+// 			this.rotation = _value == "true"?this.rotation:0;
+// 			break;
+	}
+
+	return returnArray;
+}*/
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.Caries.prototype.draw = function(_point) {
+	// Get context
+	var ctx = this.drawing.context;
+
+	// Call draw method in superclass
+	ED.Caries.superclass.draw.call(this, _point);
+
+	// Boundary path
+	ctx.beginPath();
+
+	// Boundary
+	var d = this.boxDimension;
+	ctx.rect(-d/2, -d/2, d, d);
+	var lt = 6;
+
+	// Set line attribute
+	ctx.lineWidth = lt;
+	ctx.strokeStyle = "blue";
+	ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+
+	// Non-boundary paths
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
+		ctx.beginPath();
+
+		// Locations
+		if (this.locations & this.flags['distal']) this.drawSpot(ctx, -76, 0, 14, "red");
+		if (this.locations & this.flags['buccal']) this.drawSpot(ctx, 0, -76, 14, "red");
+		if (this.locations & this.flags['mesial']) this.drawSpot(ctx, 76, 0, 14, "red");
+		if (this.locations & this.flags['palatal']) this.drawSpot(ctx, 0, 76, 14, "red");
+		if (this.locations & this.flags['occlusal']) this.drawSpot(ctx, 0, 0, 14, "red");
+
+
+		/*
+
+		// Curve
+		ctx.moveTo(-d/2, -d/3);
+		ctx.bezierCurveTo(-d/3, 0, 0, -d/4, 0, 0);
+		ctx.bezierCurveTo(0, +d/4, -d/3, 0, -d/2, +d/3);
+
+		// Hashed lines
+		var b = d/9;
+		ctx.moveTo(-4 * b, -2.1 * b);
+		ctx.lineTo(-4 * b, +2.1 * b);
+		ctx.moveTo(-3 * b, -1.55 * b);
+		ctx.lineTo(-3 * b, +1.55 * b);
+		ctx.moveTo(-2 * b, -1.2 * b);
+		ctx.lineTo(-2 * b, +1.2 * b);
+		ctx.moveTo(-1 * b, -1.1 * b);
+		ctx.lineTo(-1 * b, +1.1 * b);
+
+		// Stroke
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 6;
+		ctx.stroke();
+		*/
+
+		// Text
+// 		var label = "";
+// 		switch (this.type) {
+// 			case 'Temporary':
+// 				label = "TEMP";
+// 				break;
+// 			case 'Amalgam':
+// 				label = "Aml";
+// 				break;
+// 			case 'GIC':
+// 				label = "GIC";
+// 				break;
+// 			case 'Composite':
+// 				label = "Com";
+// 				break;
+// 		}
+// 		ctx.font = "32px sans-serif";
+// 		var textWidth = ctx.measureText(label).width;
+// 		ctx.fillStyle = "black"
+// 		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
+
+
+	}
+
+
+	// Coordinates of handles (in canvas plane)
+// 	var point = new ED.Point(0, 0)
+// 	point.setWithPolars(d/1.414, 7 * Math.PI / 4);
+// 	this.handleArray[2].location = this.transform.transformPoint(point);
+
+	// Draw handles if selected
+	//if (this.isSelected && !this.isForDrawing) this.drawHandles(_point)
+
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
+ * Returns a string containing a text description of the doodle
+ *
+ * @returns {String} Description of doodle
+ */
+ED.Caries.prototype.description = function() {
+	var posText = ""
+	if (this.locations & this.flags['distal']) posText += "distal ";
+	if (this.locations & this.flags['buccal']) posText += "buccal ";
+	if (this.locations & this.flags['mesial']) posText += "mesial ";
+	if (this.locations & this.flags['palatal']) posText += "palatal ";
+	if (this.locations & this.flags['occlusal']) posText += "occlusal ";
+
+	return this.toothNumber.toString() + " has caries in the " + posText + "position";
 }
 
 /**
@@ -12620,6 +13199,459 @@ ED.Chart.prototype.drawBox = function(_xo, _yo, _type, _label) {
 			break;
 	}
 
+}
+
+/**
+ * Crown
+ *
+ * @class Crown
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Object} _parameterJSON
+ */
+ED.Crown = function(_drawing, _parameterJSON) {
+	// Set classname
+	this.className = "Crown";
+
+	// Internal parameters
+	this.boxDimension = +200;
+	this.showPopup = true;
+	this.toothNumber = 0;
+
+	// Derived parameters
+	this.type = 'Temporary';
+
+	// Saved parameters
+	this.savedParameterArray = ['originX', 'originY', 'type'];
+
+	// Parameters in doodle control bar (parameter name: parameter label)
+	this.controlParameterArray = {
+		'type':'Type',
+	};
+
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _parameterJSON);
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.Crown.prototype = new ED.Doodle;
+ED.Crown.prototype.constructor = ED.Crown;
+ED.Crown.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.Crown.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
+
+/**
+ * Sets default dragging attributes
+ */
+ED.Crown.prototype.setPropertyDefaults = function() {
+	this.isMoveable = false;
+
+	this.parameterValidationArray['type'] = {
+		kind: 'derived',
+		type: 'string',
+		list: ['Temporary', 'Porcelain', 'Metal'],
+		animate: false
+	};
+}
+
+/**
+ * Sets default parameters
+ */
+ED.Crown.prototype.setParameterDefaults = function() {
+	// Get last added doodle
+	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+	// If there is a chart, interrogate box array to get position
+	if (chartDoodle) {
+		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+			if (!chartDoodle.boxArray[i].occupied) {
+				var newOriginX = chartDoodle.boxArray[i].point.x;
+				var newOriginY = chartDoodle.boxArray[i].point.y;
+				chartDoodle.boxArray[i].occupied = true;
+				this.toothNumber = chartDoodle.boxArray[i].number;
+				break;
+			}
+		}
+	}
+	else {
+		var newOriginX = 0;
+		var newOriginY = -400;
+	}
+	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
+	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.Crown.prototype.draw = function(_point) {
+	// Get context
+	var ctx = this.drawing.context;
+
+	// Call draw method in superclass
+	ED.Crown.superclass.draw.call(this, _point);
+
+	// Boundary path
+	ctx.beginPath();
+
+	// Boundary
+	var d = this.boxDimension;
+	ctx.rect(-d/2, -d/2, d, d);
+	var lt = 6;
+
+	// Set line attribute
+	ctx.lineWidth = lt;
+	ctx.strokeStyle = "blue";
+	ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+
+	// Non-boundary paths
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
+
+		// Text
+		var label = "CR";
+		ctx.font = "72px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, 22);
+	}
+
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
+ * Returns a string containing a text description of the doodle
+ *
+ * @returns {String} Description of doodle
+ */
+ED.Crown.prototype.description = function() {
+	var posText = ""
+	switch (this.type) {
+		case 'Temporary':
+			posText = "temporary";
+			break;
+		case 'Porcelain':
+			posText = "porcelain";
+			break;
+		case 'Metal':
+			posText = "metal";
+			break;
+	}
+	//return this.toothNumber.toString() + " has a " + posText + " crown";
+	return "";
+}
+
+/**
+ * DoubleRestoration
+ *
+ * @class DoubleRestoration
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Object} _parameterJSON
+ */
+ED.DoubleRestoration = function(_drawing, _parameterJSON) {
+	// Set classname
+	this.className = "DoubleRestoration";
+
+	// Internal parameters
+	this.boxDimension = +200;
+	this.showPopup = true;
+	this.toothNumber = 0;
+
+	// Derived parameters
+	this.type = 'Temporary';
+
+	// Other parameters
+	this.location = 0;	// number containing location of click
+
+	// Flag masks
+	this.flags = {distal:1, buccal:2, mesial:4, palatal:8, occlusal:16};
+
+	// Saved parameters
+	this.savedParameterArray = ['originX', 'originY', 'type', 'location'];
+
+	// Parameters in doodle control bar (parameter name: parameter label)
+	this.controlParameterArray = {
+		'type':'Type',
+	};
+
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _parameterJSON);
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.DoubleRestoration.prototype = new ED.Doodle;
+ED.DoubleRestoration.prototype.constructor = ED.DoubleRestoration;
+ED.DoubleRestoration.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.DoubleRestoration.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
+
+/**
+ * Sets default dragging attributes
+ */
+ED.DoubleRestoration.prototype.setPropertyDefaults = function() {
+	this.isMoveable = false;
+
+	this.parameterValidationArray['type'] = {
+		kind: 'derived',
+		type: 'string',
+		list: ['Temporary', 'Amalgam', 'GIC', 'Composite'],
+		animate: false
+	};
+}
+
+/**
+ * Sets default parameters
+ */
+ED.DoubleRestoration.prototype.setParameterDefaults = function() {
+	// Get last added doodle
+	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+	// If there is a chart, interrogate box array to get position
+	if (chartDoodle) {
+		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+			if (!chartDoodle.boxArray[i].occupied) {
+				var newOriginX = chartDoodle.boxArray[i].point.x;
+				var newOriginY = chartDoodle.boxArray[i].point.y;
+				chartDoodle.boxArray[i].occupied = true;
+				this.toothNumber = chartDoodle.boxArray[i].number;
+				break;
+			}
+		}
+	}
+	else {
+		var newOriginX = 0;
+		var newOriginY = -400;
+	}
+	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
+	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+
+	 // Register for notifications with drawing object to respond to clicks
+    this.drawing.registerForNotifications(this, 'callBack', []);
+}
+
+// Method called for notification
+ED.DoubleRestoration.prototype.callBack = function(_messageArray) {
+	switch (_messageArray['eventName'])
+	{
+		// Eye draw image files all loaded
+		case 'mousedown':
+		if (this.isSelected) {
+
+			// Get mouse coordinates
+			var x = _messageArray['object'].point.x - (this.originX + 1500) * 60/200 - 20;
+			var y = _messageArray['object'].point.y - 70;
+
+			// Work out which area
+			if (x <= 15) {
+				this.location = this.flags['distal'];
+			}
+			else if (x >= 45) {
+				this.location = this.flags['mesial'];
+			}
+			else if (y <= 15)  {
+				this.location = this.flags['buccal'];
+			}
+			else if (y > 15 && y < 45)  {
+				this.location = this.flags['occlusal'];
+			}
+			else if (y >= 45)  {
+				this.location = this.flags['palatal'];
+			}
+		}
+
+		break;
+	}
+}
+
+/**
+ * Calculates values of dependent parameters. This function embodies the relationship between simple and derived parameters
+ * The returned parameters are animated if the 'animate' property in the parameterValidationArray is set to true
+ *
+ * @param {String} _parameter Name of parameter that has changed
+ * @value {Undefined} _value Value of parameter to calculate
+ * @returns {Array} Associative array of values of dependent parameters
+ */
+/*ED.DoubleRestoration.prototype.dependentParameterValues = function(_parameter, _value) {
+	var returnArray = new Array();
+
+	switch (_parameter) {
+		case 'rotation':
+			console.log(_value * 180/Math.PI);
+
+			break;
+
+// 		case 'pupilSize':
+// 			switch (_value) {
+// 				case 'Large':
+// 					if (this.apexY < -200) returnValue = this.apexY;
+// 					else returnArray['apexY'] = -260;
+// 					break;
+// 				case 'Medium':
+// 					if (this.apexY >= -200 && this.apexY < -100) returnValue = this.apexY;
+// 					else returnArray['apexY'] = -200;
+// 					break;
+// 				case 'Small':
+// 					if (this.apexY >= -100) returnValue = this.apexY;
+// 					else returnArray['apexY'] = -100;
+// 					break;
+// 			}
+// 			break;
+// 		case 'coloboma':
+// 			this.isRotatable = _value == "true"?true:false;
+// 			this.rotation = _value == "true"?this.rotation:0;
+// 			break;
+	}
+
+	return returnArray;
+}*/
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.DoubleRestoration.prototype.draw = function(_point) {
+	// Get context
+	var ctx = this.drawing.context;
+
+	// Call draw method in superclass
+	ED.DoubleRestoration.superclass.draw.call(this, _point);
+
+	// Boundary path
+	ctx.beginPath();
+
+	// Boundary
+	var d = this.boxDimension;
+	ctx.rect(-d/2, -d/2, d, d);
+	var lt = 6;
+
+	// Set line attribute
+	ctx.lineWidth = lt;
+	ctx.strokeStyle = "blue";
+	ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+
+	// Non-boundary paths
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
+
+		// Locations and rotation of curve
+		var angle = 0;
+		if (this.location == this.flags['distal']) angle = 0;
+		if (this.location == this.flags['buccal']) angle = Math.PI/2;
+		if (this.location == this.flags['mesial']) angle = Math.PI;
+		if (this.location == this.flags['palatal']) angle = 3 * Math.PI/2;
+		if (this.location == this.flags['occlusal']) angle = 0;
+
+		ctx.beginPath();
+
+		// Save context so text does not rotate
+		ctx.save();
+
+		// Rotate curve
+		ctx.rotate(angle);
+
+		// Curve
+		ctx.moveTo(-d/2, -d/3);
+		ctx.bezierCurveTo(-d/3, 0, 0, -d/4, 0, 0);
+		ctx.bezierCurveTo(0, +d/4, -d/3, 0, -d/2, +d/3);
+
+		// Hashed lines
+		var b = d/9;
+		ctx.moveTo(-4 * b, -2.1 * b);
+		ctx.lineTo(-4 * b, +2.1 * b);
+		ctx.moveTo(-3 * b, -1.55 * b);
+		ctx.lineTo(-3 * b, +1.55 * b);
+		ctx.moveTo(-2 * b, -1.2 * b);
+		ctx.lineTo(-2 * b, +1.2 * b);
+		ctx.moveTo(-1 * b, -1.1 * b);
+		ctx.lineTo(-1 * b, +1.1 * b);
+
+
+		ctx.restore();
+
+		// Stroke
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 6;
+		ctx.stroke();
+
+		// Text
+		var label = "";
+		switch (this.type) {
+			case 'Temporary':
+				label = "TEMP";
+				break;
+			case 'Amalgam':
+				label = "Aml";
+				break;
+			case 'GIC':
+				label = "GIC";
+				break;
+			case 'Composite':
+				label = "Com";
+				break;
+		}
+		ctx.font = "32px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
+
+	}
+
+
+	// Coordinates of handles (in canvas plane)
+// 	var point = new ED.Point(0, 0)
+// 	point.setWithPolars(d/1.414, 7 * Math.PI / 4);
+// 	this.handleArray[2].location = this.transform.transformPoint(point);
+
+	// Draw handles if selected
+	//if (this.isSelected && !this.isForDrawing) this.drawHandles(_point)
+
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
+ * Returns a string containing a text description of the doodle
+ *
+ * @returns {String} Description of doodle
+ */
+ED.DoubleRestoration.prototype.description = function() {
+	var posText = ""
+	switch (this.type) {
+		case 'Temporary':
+			posText = "temporary";
+			break;
+		case 'Porcelain':
+			posText = "porcelain";
+			break;
+		case 'Gold':
+			posText = "gold";
+			break;
+	}
+	//return this.toothNumber.toString() + " has a " + posText + " inlay";
+	return "";
 }
 
 /**
@@ -13024,205 +14056,8 @@ ED.Implant.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Implant.prototype.description = function() {
-	return this.toothNumber.toString() + " has an implant restored tooth";
-}
-
-/**
- * Inlay
- *
- * @class Inlay
- * @property {String} className Name of doodle subclass
- * @param {Drawing} _drawing
- * @param {Object} _parameterJSON
- */
-ED.Inlay = function(_drawing, _parameterJSON) {
-	// Set classname
-	this.className = "Inlay";
-
-	// Internal parameters
-	this.boxDimension = +200;
-	this.showPopup = true;
-	this.toothNumber = 0;
-
-	// Derived parameters
-	this.type = 'Temporary';
-
-	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY', 'type'];
-
-	// Parameters in doodle control bar (parameter name: parameter label)
-	this.controlParameterArray = {
-		'type':'Type',
-	};
-
-	// Call superclass constructor
-	ED.Doodle.call(this, _drawing, _parameterJSON);
-}
-
-/**
- * Sets superclass and constructor
- */
-ED.Inlay.prototype = new ED.Doodle;
-ED.Inlay.prototype.constructor = ED.Inlay;
-ED.Inlay.superclass = ED.Doodle.prototype;
-
-/**
- * Sets handle attributes
- */
-ED.Inlay.prototype.setHandles = function() {
-	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
-}
-
-/**
- * Sets default dragging attributes
- */
-ED.Inlay.prototype.setPropertyDefaults = function() {
-	this.isMoveable = false;
-	this.isRotatable = false;
-
-	// Array of angles to snap to
-// 	var phi = Math.PI / 2;
-// 	this.anglesArray = [0, 1 * phi, 2 * phi, 3 * phi];
-
-	this.parameterValidationArray['type'] = {
-		kind: 'derived',
-		type: 'string',
-		list: ['Temporary', 'Porcelain', 'Gold'],
-		animate: false
-	};
-}
-
-/**
- * Sets default parameters
- */
-ED.Inlay.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
-}
-
-/**
- * Draws doodle or performs a hit test if a Point parameter is passed
- *
- * @param {Point} _point Optional point in canvas plane, passed if performing hit test
- */
-ED.Inlay.prototype.draw = function(_point) {
-	// Get context
-	var ctx = this.drawing.context;
-
-	// Call draw method in superclass
-	ED.Inlay.superclass.draw.call(this, _point);
-
-	// Boundary path
-	ctx.beginPath();
-
-	// Boundary
-	var d = this.boxDimension;
-	ctx.rect(-d/2, -d/2, d, d);
-	var lt = 6;
-
-	// Set line attribute
-	ctx.lineWidth = lt;
-	ctx.strokeStyle = "blue";
-	ctx.fillStyle = "rgba(255, 255, 255, 0)";
-
-	// Draw boundary path (also hit testing)
-	this.drawBoundary(_point);
-
-	// Non-boundary paths
-	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
-		ctx.beginPath();
-
-		// Curve
-		ctx.moveTo(-d/2, -d/3);
-		ctx.bezierCurveTo(-d/3, 0, 0, -d/4, 0, 0);
-		ctx.bezierCurveTo(0, +d/4, -d/3, 0, -d/2, +d/3);
-
-		// Hashed lines
-		var b = d/9;
-		ctx.moveTo(-4 * b, -2.1 * b);
-		ctx.lineTo(-4 * b, +2.1 * b);
-		ctx.moveTo(-3 * b, -1.55 * b);
-		ctx.lineTo(-3 * b, +1.55 * b);
-		ctx.moveTo(-2 * b, -1.2 * b);
-		ctx.lineTo(-2 * b, +1.2 * b);
-		ctx.moveTo(-1 * b, -1.1 * b);
-		ctx.lineTo(-1 * b, +1.1 * b);
-
-		// Stroke
-		ctx.strokeStyle = "black";
-		ctx.lineWidth = 6;
-		ctx.stroke();
-
-		// Text
-		var label = "";
-		switch (this.type) {
-			case 'Temporary':
-				label = "TEMP";
-				break;
-			case 'Porcelain':
-				label = "PL";
-				break;
-			case 'Gold':
-				label = "GL";
-				break;
-		}
-		ctx.font = "32px sans-serif";
-		var textWidth = ctx.measureText(label).width;
-		ctx.fillStyle = "black"
-		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
-	}
-
-
-	// Coordinates of handles (in canvas plane)
-	var point = new ED.Point(0, 0)
-	point.setWithPolars(d/1.414, 7 * Math.PI / 4);
-	this.handleArray[2].location = this.transform.transformPoint(point);
-
-	// Draw handles if selected
-	//if (this.isSelected && !this.isForDrawing) this.drawHandles(_point)
-
-	// Return value indicating successful hittest
-	return this.isClicked;
-}
-
-/**
- * Returns a string containing a text description of the doodle
- *
- * @returns {String} Description of doodle
- */
-ED.Inlay.prototype.description = function() {
-	var posText = ""
-	switch (this.type) {
-		case 'Temporary':
-			posText = "temporary";
-			break;
-		case 'Porcelain':
-			posText = "porcelain";
-			break;
-		case 'Gold':
-			posText = "gold";
-			break;
-	}
-	return this.toothNumber.toString() + " has a " + posText + " inlay";
+	//return this.toothNumber.toString() + " has an implant restored tooth";
+	return "";
 }
 
 /**
@@ -13370,7 +14205,8 @@ ED.Missing.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Missing.prototype.description = function() {
-	return this.toothNumber.toString() + " is missing";
+	var text = this.gapClosed ? " and the gap is closed":"";
+	return this.toothNumber.toString() + " is missing" + text;
 }
 
 
@@ -13493,14 +14329,20 @@ ED.Restoration = function(_drawing, _parameterJSON) {
 	this.toothNumber = 0;
 
 	// Derived parameters
-	this.position = 'Occlusal';
+	this.type = 'Temporary';
+
+	// Other parameters
+	this.locations = 16;	// binary flags indicating location of lesions
+
+	// Flag masks
+	this.flags = {distal:1, buccal:2, mesial:4, palatal:8, occlusal:16};
 
 	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY', 'position'];
+	this.savedParameterArray = ['originX', 'originY', 'type', 'locations'];
 
 	// Parameters in doodle control bar (parameter name: parameter label)
 	this.controlParameterArray = {
-		'position':'Position',
+		'type':'Type',
 	};
 
 	// Call superclass constructor
@@ -13515,16 +14357,22 @@ ED.Restoration.prototype.constructor = ED.Restoration;
 ED.Restoration.superclass = ED.Doodle.prototype;
 
 /**
+ * Sets handle attributes
+ */
+ED.Restoration.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
+
+/**
  * Sets default dragging attributes
  */
 ED.Restoration.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
-	this.isRotatable = false;
 
-	this.parameterValidationArray['position'] = {
+	this.parameterValidationArray['type'] = {
 		kind: 'derived',
 		type: 'string',
-		list: ['Palatal', 'Occlusal', 'Buccal'],
+		list: ['Temporary', 'Amalgam', 'GIC', 'Composite'],
 		animate: false
 	};
 }
@@ -13533,7 +14381,7 @@ ED.Restoration.prototype.setPropertyDefaults = function() {
  * Sets default parameters
  */
 ED.Restoration.prototype.setParameterDefaults = function() {
-	// Get chart doodle
+	// Get last added doodle
 	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
 
 	// If there is a chart, interrogate box array to get position
@@ -13554,7 +14402,86 @@ ED.Restoration.prototype.setParameterDefaults = function() {
 	}
 	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
 	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+
+	 // Register for notifications with drawing object to respond to clicks
+    this.drawing.registerForNotifications(this, 'callBack', []);
 }
+
+// Method called for notification
+ED.Restoration.prototype.callBack = function(_messageArray) {
+	switch (_messageArray['eventName'])
+	{
+		// Eye draw image files all loaded
+		case 'mousedown':
+		if (this.isSelected) {
+
+			// Get mouse coordinates
+			var x = _messageArray['object'].point.x - (this.originX + 1500) * 60/200 - 20;
+			var y = _messageArray['object'].point.y - 70;
+
+			// Work out which area
+			if (x <= 15) {
+				this.locations = this.locations ^ this.flags['distal'];
+			}
+			else if (x >= 45) {
+				this.locations = this.locations ^ this.flags['mesial'];
+			}
+			else if (y <= 15)  {
+				this.locations = this.locations ^ this.flags['buccal'];
+			}
+			else if (y > 15 && y < 45)  {
+				this.locations = this.locations ^ this.flags['occlusal'];
+			}
+			else if (y >= 45)  {
+				this.locations = this.locations ^ this.flags['palatal'];
+			}
+		}
+
+		break;
+	}
+}
+
+/**
+ * Calculates values of dependent parameters. This function embodies the relationship between simple and derived parameters
+ * The returned parameters are animated if the 'animate' property in the parameterValidationArray is set to true
+ *
+ * @param {String} _parameter Name of parameter that has changed
+ * @value {Undefined} _value Value of parameter to calculate
+ * @returns {Array} Associative array of values of dependent parameters
+ */
+/*ED.Restoration.prototype.dependentParameterValues = function(_parameter, _value) {
+	var returnArray = new Array();
+
+	switch (_parameter) {
+		case 'rotation':
+			console.log(_value * 180/Math.PI);
+
+			break;
+
+// 		case 'pupilSize':
+// 			switch (_value) {
+// 				case 'Large':
+// 					if (this.apexY < -200) returnValue = this.apexY;
+// 					else returnArray['apexY'] = -260;
+// 					break;
+// 				case 'Medium':
+// 					if (this.apexY >= -200 && this.apexY < -100) returnValue = this.apexY;
+// 					else returnArray['apexY'] = -200;
+// 					break;
+// 				case 'Small':
+// 					if (this.apexY >= -100) returnValue = this.apexY;
+// 					else returnArray['apexY'] = -100;
+// 					break;
+// 			}
+// 			break;
+// 		case 'coloboma':
+// 			this.isRotatable = _value == "true"?true:false;
+// 			this.rotation = _value == "true"?this.rotation:0;
+// 			break;
+	}
+
+	return returnArray;
+}*/
 
 /**
  * Draws doodle or performs a hit test if a Point parameter is passed
@@ -13586,21 +14513,72 @@ ED.Restoration.prototype.draw = function(_point) {
 
 	// Non-boundary paths
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
-		var y = 0;
-		switch (this.position) {
-				case 'Palatal':
-					y = -9*d/24;
-					break;
-				case 'Occlusal':
-					y = 0;
-					break;
-				case 'Buccal':
-					y = 9*d/24;
-					break;
-			}
+		ctx.beginPath();
 
-		this.drawSpot(ctx, 0, y, 14, "red");
+		// Locations
+		if (this.locations & this.flags['distal']) this.drawSpot(ctx, -76, 0, 14, "black");
+		if (this.locations & this.flags['buccal']) this.drawSpot(ctx, 0, -76, 14, "black");
+		if (this.locations & this.flags['mesial']) this.drawSpot(ctx, 76, 0, 14, "black");
+		if (this.locations & this.flags['palatal']) this.drawSpot(ctx, 0, 76, 14, "black");
+		if (this.locations & this.flags['occlusal']) this.drawSpot(ctx, 0, 0, 14, "black");
+
+
+		/*
+
+		// Curve
+		ctx.moveTo(-d/2, -d/3);
+		ctx.bezierCurveTo(-d/3, 0, 0, -d/4, 0, 0);
+		ctx.bezierCurveTo(0, +d/4, -d/3, 0, -d/2, +d/3);
+
+		// Hashed lines
+		var b = d/9;
+		ctx.moveTo(-4 * b, -2.1 * b);
+		ctx.lineTo(-4 * b, +2.1 * b);
+		ctx.moveTo(-3 * b, -1.55 * b);
+		ctx.lineTo(-3 * b, +1.55 * b);
+		ctx.moveTo(-2 * b, -1.2 * b);
+		ctx.lineTo(-2 * b, +1.2 * b);
+		ctx.moveTo(-1 * b, -1.1 * b);
+		ctx.lineTo(-1 * b, +1.1 * b);
+
+		// Stroke
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 6;
+		ctx.stroke();
+		*/
+
+		// Text
+		var label = "";
+		switch (this.type) {
+			case 'Temporary':
+				label = "TEMP";
+				break;
+			case 'Amalgam':
+				label = "Aml";
+				break;
+			case 'GIC':
+				label = "GIC";
+				break;
+			case 'Composite':
+				label = "Com";
+				break;
+		}
+		ctx.font = "32px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
+
+
 	}
+
+
+	// Coordinates of handles (in canvas plane)
+// 	var point = new ED.Point(0, 0)
+// 	point.setWithPolars(d/1.414, 7 * Math.PI / 4);
+// 	this.handleArray[2].location = this.transform.transformPoint(point);
+
+	// Draw handles if selected
+	//if (this.isSelected && !this.isForDrawing) this.drawHandles(_point)
 
 	// Return value indicating successful hittest
 	return this.isClicked;
@@ -13613,18 +14591,19 @@ ED.Restoration.prototype.draw = function(_point) {
  */
 ED.Restoration.prototype.description = function() {
 	var posText = ""
-	switch (this.position) {
-		case 'Palatal':
-			posText = "a palatal";
+	switch (this.type) {
+		case 'Temporary':
+			posText = "temporary";
 			break;
-		case 'Occlusal':
-			posText = "an occlusal";
+		case 'Porcelain':
+			posText = "porcelain";
 			break;
-		case 'Buccal':
-			posText = "a buccal";
+		case 'Gold':
+			posText = "gold";
 			break;
 	}
-	return this.toothNumber.toString() + " has " + posText + " restoration";
+	//return this.toothNumber.toString() + " has a " + posText + " inlay";
+	return "";
 }
 
 /**
@@ -13775,6 +14754,137 @@ ED.Rotation.prototype.draw = function(_point) {
  */
 ED.Rotation.prototype.description = function() {
 	return this.toothNumber.toString() + " is rotated distally";
+}
+
+/**
+ * SurfaceLoss
+ *
+ * @class SurfaceLoss
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Object} _parameterJSON
+ */
+ED.SurfaceLoss = function(_drawing, _parameterJSON) {
+	// Set classname
+	this.className = "SurfaceLoss";
+
+	// Internal parameters
+	this.boxDimension = +200;
+	this.showPopup = false;
+	this.toothNumber = 0;
+
+	// Saved parameters
+	this.savedParameterArray = ['originX', 'originY'];
+
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _parameterJSON);
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.SurfaceLoss.prototype = new ED.Doodle;
+ED.SurfaceLoss.prototype.constructor = ED.SurfaceLoss;
+ED.SurfaceLoss.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.SurfaceLoss.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
+
+/**
+ * Sets default dragging attributes
+ */
+ED.SurfaceLoss.prototype.setPropertyDefaults = function() {
+	this.isMoveable = false;
+
+	this.parameterValidationArray['type'] = {
+		kind: 'derived',
+		type: 'string',
+		list: ['Temporary', 'Porcelain', 'Metal'],
+		animate: false
+	};
+}
+
+/**
+ * Sets default parameters
+ */
+ED.SurfaceLoss.prototype.setParameterDefaults = function() {
+	// Get last added doodle
+	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+	// If there is a chart, interrogate box array to get position
+	if (chartDoodle) {
+		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+			if (!chartDoodle.boxArray[i].occupied) {
+				var newOriginX = chartDoodle.boxArray[i].point.x;
+				var newOriginY = chartDoodle.boxArray[i].point.y;
+				chartDoodle.boxArray[i].occupied = true;
+				this.toothNumber = chartDoodle.boxArray[i].number;
+				break;
+			}
+		}
+	}
+	else {
+		var newOriginX = 0;
+		var newOriginY = -400;
+	}
+	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
+	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.SurfaceLoss.prototype.draw = function(_point) {
+	// Get context
+	var ctx = this.drawing.context;
+
+	// Call draw method in superclass
+	ED.SurfaceLoss.superclass.draw.call(this, _point);
+
+	// Boundary path
+	ctx.beginPath();
+
+	// Boundary
+	var d = this.boxDimension;
+	ctx.rect(-d/2, -d/2, d, d);
+	var lt = 6;
+
+	// Set line attribute
+	ctx.lineWidth = lt;
+	ctx.strokeStyle = "blue";
+	ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+
+	// Non-boundary paths
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
+
+		// Text
+		var label = "TSL";
+		ctx.font = "72px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, 22);
+	}
+
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
+ * Returns a string containing a text description of the doodle
+ *
+ * @returns {String} Description of doodle
+ */
+ED.SurfaceLoss.prototype.description = function() {
+	return this.toothNumber.toString() + " has surface loss";
 }
 
 /**
@@ -35595,12 +36705,12 @@ ED.Patch.prototype.setParameterDefaults = function() {
 	this.height = 200;
 
 	this.setParameterFromString('material', 'Sclera');
-	
+
 	// Position over tube if present
 	var doodle = this.drawing.lastDoodleOfClass("Tube");
 	if (doodle) {
 		var isRE = (this.drawing.eye == ED.eye.Right);
-		
+
 		switch (doodle.platePosition) {
 			case 'STQ':
 				this.originX = isRE?-350:+350;
@@ -35621,7 +36731,7 @@ ED.Patch.prototype.setParameterDefaults = function() {
 				this.originX = isRE?-350:+350;
 				this.originY = +350;
 				this.rotation = (isRE?5:3) * Math.PI/4;
-				break;	
+				break;
 		}
 	}
 
@@ -35699,7 +36809,8 @@ ED.Patch.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Patch.prototype.description = function() {
-	return this.material + " patch";
+	//return this.material + " patch";
+	return "";
 }
 
 /**

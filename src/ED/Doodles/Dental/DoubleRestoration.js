@@ -1,14 +1,14 @@
 /**
- * Restoration
+ * DoubleRestoration
  *
- * @class Restoration
+ * @class DoubleRestoration
  * @property {String} className Name of doodle subclass
  * @param {Drawing} _drawing
  * @param {Object} _parameterJSON
  */
-ED.Restoration = function(_drawing, _parameterJSON) {
+ED.DoubleRestoration = function(_drawing, _parameterJSON) {
 	// Set classname
-	this.className = "Restoration";
+	this.className = "DoubleRestoration";
 
 	// Internal parameters
 	this.boxDimension = +200;
@@ -19,13 +19,13 @@ ED.Restoration = function(_drawing, _parameterJSON) {
 	this.type = 'Temporary';
 
 	// Other parameters
-	this.locations = 16;	// binary flags indicating location of lesions
+	this.location = 0;	// number containing location of click
 
 	// Flag masks
 	this.flags = {distal:1, buccal:2, mesial:4, palatal:8, occlusal:16};
 
 	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY', 'type', 'locations'];
+	this.savedParameterArray = ['originX', 'originY', 'type', 'location'];
 
 	// Parameters in doodle control bar (parameter name: parameter label)
 	this.controlParameterArray = {
@@ -39,21 +39,21 @@ ED.Restoration = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Restoration.prototype = new ED.Doodle;
-ED.Restoration.prototype.constructor = ED.Restoration;
-ED.Restoration.superclass = ED.Doodle.prototype;
+ED.DoubleRestoration.prototype = new ED.Doodle;
+ED.DoubleRestoration.prototype.constructor = ED.DoubleRestoration;
+ED.DoubleRestoration.superclass = ED.Doodle.prototype;
 
 /**
  * Sets handle attributes
  */
-ED.Restoration.prototype.setHandles = function() {
+ED.DoubleRestoration.prototype.setHandles = function() {
 	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
 }
 
 /**
  * Sets default dragging attributes
  */
-ED.Restoration.prototype.setPropertyDefaults = function() {
+ED.DoubleRestoration.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 
 	this.parameterValidationArray['type'] = {
@@ -67,7 +67,7 @@ ED.Restoration.prototype.setPropertyDefaults = function() {
 /**
  * Sets default parameters
  */
-ED.Restoration.prototype.setParameterDefaults = function() {
+ED.DoubleRestoration.prototype.setParameterDefaults = function() {
 	// Get last added doodle
 	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
 
@@ -95,7 +95,7 @@ ED.Restoration.prototype.setParameterDefaults = function() {
 }
 
 // Method called for notification
-ED.Restoration.prototype.callBack = function(_messageArray) {
+ED.DoubleRestoration.prototype.callBack = function(_messageArray) {
 	switch (_messageArray['eventName'])
 	{
 		// Eye draw image files all loaded
@@ -108,19 +108,19 @@ ED.Restoration.prototype.callBack = function(_messageArray) {
 
 			// Work out which area
 			if (x <= 15) {
-				this.locations = this.locations ^ this.flags['distal'];
+				this.location = this.flags['distal'];
 			}
 			else if (x >= 45) {
-				this.locations = this.locations ^ this.flags['mesial'];
+				this.location = this.flags['mesial'];
 			}
 			else if (y <= 15)  {
-				this.locations = this.locations ^ this.flags['buccal'];
+				this.location = this.flags['buccal'];
 			}
 			else if (y > 15 && y < 45)  {
-				this.locations = this.locations ^ this.flags['occlusal'];
+				this.location = this.flags['occlusal'];
 			}
 			else if (y >= 45)  {
-				this.locations = this.locations ^ this.flags['palatal'];
+				this.location = this.flags['palatal'];
 			}
 		}
 
@@ -136,7 +136,7 @@ ED.Restoration.prototype.callBack = function(_messageArray) {
  * @value {Undefined} _value Value of parameter to calculate
  * @returns {Array} Associative array of values of dependent parameters
  */
-/*ED.Restoration.prototype.dependentParameterValues = function(_parameter, _value) {
+/*ED.DoubleRestoration.prototype.dependentParameterValues = function(_parameter, _value) {
 	var returnArray = new Array();
 
 	switch (_parameter) {
@@ -175,12 +175,12 @@ ED.Restoration.prototype.callBack = function(_messageArray) {
  *
  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
  */
-ED.Restoration.prototype.draw = function(_point) {
+ED.DoubleRestoration.prototype.draw = function(_point) {
 	// Get context
 	var ctx = this.drawing.context;
 
 	// Call draw method in superclass
-	ED.Restoration.superclass.draw.call(this, _point);
+	ED.DoubleRestoration.superclass.draw.call(this, _point);
 
 	// Boundary path
 	ctx.beginPath();
@@ -200,17 +200,22 @@ ED.Restoration.prototype.draw = function(_point) {
 
 	// Non-boundary paths
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
+
+		// Locations and rotation of curve
+		var angle = 0;
+		if (this.location == this.flags['distal']) angle = 0;
+		if (this.location == this.flags['buccal']) angle = Math.PI/2;
+		if (this.location == this.flags['mesial']) angle = Math.PI;
+		if (this.location == this.flags['palatal']) angle = 3 * Math.PI/2;
+		if (this.location == this.flags['occlusal']) angle = 0;
+
 		ctx.beginPath();
 
-		// Locations
-		if (this.locations & this.flags['distal']) this.drawSpot(ctx, -76, 0, 14, "black");
-		if (this.locations & this.flags['buccal']) this.drawSpot(ctx, 0, -76, 14, "black");
-		if (this.locations & this.flags['mesial']) this.drawSpot(ctx, 76, 0, 14, "black");
-		if (this.locations & this.flags['palatal']) this.drawSpot(ctx, 0, 76, 14, "black");
-		if (this.locations & this.flags['occlusal']) this.drawSpot(ctx, 0, 0, 14, "black");
+		// Save context so text does not rotate
+		ctx.save();
 
-
-		/*
+		// Rotate curve
+		ctx.rotate(angle);
 
 		// Curve
 		ctx.moveTo(-d/2, -d/3);
@@ -228,11 +233,13 @@ ED.Restoration.prototype.draw = function(_point) {
 		ctx.moveTo(-1 * b, -1.1 * b);
 		ctx.lineTo(-1 * b, +1.1 * b);
 
+
+		ctx.restore();
+
 		// Stroke
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = 6;
 		ctx.stroke();
-		*/
 
 		// Text
 		var label = "";
@@ -255,7 +262,6 @@ ED.Restoration.prototype.draw = function(_point) {
 		ctx.fillStyle = "black"
 		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
 
-
 	}
 
 
@@ -276,7 +282,7 @@ ED.Restoration.prototype.draw = function(_point) {
  *
  * @returns {String} Description of doodle
  */
-ED.Restoration.prototype.description = function() {
+ED.DoubleRestoration.prototype.description = function() {
 	var posText = ""
 	switch (this.type) {
 		case 'Temporary':

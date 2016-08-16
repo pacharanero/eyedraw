@@ -1,28 +1,22 @@
 /**
- * Missing
+ * SurfaceLoss
  *
- * @class Missing
+ * @class SurfaceLoss
  * @property {String} className Name of doodle subclass
  * @param {Drawing} _drawing
  * @param {Object} _parameterJSON
  */
-ED.Missing = function(_drawing, _parameterJSON) {
+ED.SurfaceLoss = function(_drawing, _parameterJSON) {
 	// Set classname
-	this.className = "Missing";
+	this.className = "SurfaceLoss";
 
 	// Internal parameters
 	this.boxDimension = +200;
-	this.showPopup = true;
+	this.showPopup = false;
 	this.toothNumber = 0;
-	this.gapClosed = false;
 
 	// Saved parameters
-	this.savedParameterArray = ['originX', 'originY', 'gapClosed'];
-
-	// Parameters in doodle control bar (parameter name: parameter label)
-	this.controlParameterArray = {
-		'gapClosed':'Gap Closed',
-	};
+	this.savedParameterArray = ['originX', 'originY'];
 
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _parameterJSON);
@@ -31,29 +25,35 @@ ED.Missing = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Missing.prototype = new ED.Doodle;
-ED.Missing.prototype.constructor = ED.Missing;
-ED.Missing.superclass = ED.Doodle.prototype;
+ED.SurfaceLoss.prototype = new ED.Doodle;
+ED.SurfaceLoss.prototype.constructor = ED.SurfaceLoss;
+ED.SurfaceLoss.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.SurfaceLoss.prototype.setHandles = function() {
+	this.handleArray[2] = new ED.Doodle.Handle(null, true, ED.Mode.Rotate, false);
+}
 
 /**
  * Sets default dragging attributes
  */
-ED.Missing.prototype.setPropertyDefaults = function() {
+ED.SurfaceLoss.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
-	this.isRotatable = false;
 
-	// Add complete validation arrays for derived parameters
-	this.parameterValidationArray['gapClosed'] = {
+	this.parameterValidationArray['type'] = {
 		kind: 'derived',
-		type: 'bool',
-		display: true
+		type: 'string',
+		list: ['Temporary', 'Porcelain', 'Metal'],
+		animate: false
 	};
 }
 
 /**
  * Sets default parameters
  */
-ED.Missing.prototype.setParameterDefaults = function() {
+ED.SurfaceLoss.prototype.setParameterDefaults = function() {
 	// Get last added doodle
 	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
 
@@ -82,12 +82,12 @@ ED.Missing.prototype.setParameterDefaults = function() {
  *
  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
  */
-ED.Missing.prototype.draw = function(_point) {
+ED.SurfaceLoss.prototype.draw = function(_point) {
 	// Get context
 	var ctx = this.drawing.context;
 
 	// Call draw method in superclass
-	ED.Missing.superclass.draw.call(this, _point);
+	ED.SurfaceLoss.superclass.draw.call(this, _point);
 
 	// Boundary path
 	ctx.beginPath();
@@ -107,30 +107,13 @@ ED.Missing.prototype.draw = function(_point) {
 
 	// Non-boundary paths
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
-		ctx.beginPath();
 
-		// Line
-		ctx.moveTo(-d/2, 0);
-		ctx.lineTo(+d/2, 0);
-
-		if (this.gapClosed) {
-
-			// Left arrow
-			ctx.moveTo(-d/10, 0);
-			ctx.lineTo(-d/6, -d/12);
-			ctx.moveTo(-d/10, 0);
-			ctx.lineTo(-d/6, +d/12);
-
-			// Right arrow
-			ctx.moveTo(+d/10, 0);
-			ctx.lineTo(+d/6, -d/12);
-			ctx.moveTo(+d/10, 0);
-			ctx.lineTo(+d/6, +d/12);
-		}
-
-		ctx.strokeStyle = "red";
-		ctx.lineWidth = 6;
-		ctx.stroke();
+		// Text
+		var label = "TSL";
+		ctx.font = "72px sans-serif";
+		var textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, 22);
 	}
 
 	// Return value indicating successful hittest
@@ -142,8 +125,6 @@ ED.Missing.prototype.draw = function(_point) {
  *
  * @returns {String} Description of doodle
  */
-ED.Missing.prototype.description = function() {
-	var text = this.gapClosed ? " and the gap is closed":"";
-	return this.toothNumber.toString() + " is missing" + text;
+ED.SurfaceLoss.prototype.description = function() {
+	return this.toothNumber.toString() + " has surface loss";
 }
-

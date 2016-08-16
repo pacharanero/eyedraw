@@ -105,9 +105,11 @@
 					//this.drawing.addDoodle('Episcleritis');
 					this.drawing.addDoodle('Chart');
  					//this.drawing.addDoodle('Fracture');
-					this.drawing.addDoodle('Missing');
+					this.drawing.addDoodle('DoubleRestoration');
+					//this.drawing.addDoodle('Caries');
 					//this.drawing.addDoodle('Rotation');
 					this.drawing.deselectDoodles();
+
 
 					break;
 
@@ -180,6 +182,10 @@
 					addToReport();
 					break;
 
+					case 'mousedown':
+					addToReport();
+					break;
+
                     }
                 }
             }
@@ -229,13 +235,16 @@ return false;" ><img src="../../assets/img/old/flipHor.gif" /></button> -->
 		<div class="ed-toolbar" id="canvasEdit1doodleToolbar">
 			<button id="LensRPS" class="ed-button" title="Normal" onclick="drawingEdit.addDoodle('Normal'); return false;" ><img src="../../assets/img/old/Normal.gif" /></button>
 			<button id="LensRPS" class="ed-button" title="Missing" onclick="drawingEdit.addDoodle('Missing'); return false;" ><img src="../../assets/img/old/Missing.gif" /></button>
+			<button id="LensRPS" class="ed-button" title="Caries" onclick="drawingEdit.addDoodle('Caries'); return false;" ><img src="../../assets/img/old/Caries.gif" /></button>
 			<button id="LensRPS" class="ed-button" title="Restoration" onclick="drawingEdit.addDoodle('Restoration'); return false;" ><img src="../../assets/img/old/Restoration.gif" /></button>
-			<button id="LensRPS" class="ed-button" title="Inlay" onclick="drawingEdit.addDoodle('Inlay'); return false;" ><img src="../../assets/img/old/Inlay.gif" /></button>
+			<button id="LensRPS" class="ed-button" title="Double Restoration" onclick="drawingEdit.addDoodle('DoubleRestoration'); return false;" ><img src="../../assets/img/old/DoubleRestoration.gif" /></button>
 			<button id="LensRPS" class="ed-button" title="Fracture" onclick="drawingEdit.addDoodle('Fracture'); return false;" ><img src="../../assets/img/old/Fracture.gif" /></button>
 			<button id="LensRPS" class="ed-button" title="Implant" onclick="drawingEdit.addDoodle('Implant'); return false;" ><img src="../../assets/img/old/Implant.gif" /></button>
 			<button id="LensRPS" class="ed-button" title="Extracted" onclick="drawingEdit.addDoodle('Extracted'); return false;" ><img src="../../assets/img/old/Extracted.gif" /></button>
 			<button id="LensRPS" class="ed-button" title="Canine" onclick="drawingEdit.addDoodle('Canine'); return false;" ><img src="../../assets/img/old/Canine.gif" /></button>
 			<button id="LensRPS" class="ed-button" title="Rotation" onclick="drawingEdit.addDoodle('Rotation'); return false;" ><img src="../../assets/img/old/Rotation.gif" /></button>
+
+			<button id="LensRPS" class="ed-button" title="Tooth Surface Loss" onclick="drawingEdit.addDoodle('SurfaceLoss'); return false;" ><img src="../../assets/img/old/SurfaceLoss.gif" /></button>
 			<br />
 		</div>
 
