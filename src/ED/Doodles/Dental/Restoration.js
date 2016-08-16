@@ -39,9 +39,9 @@ ED.Restoration = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Restoration.prototype = new ED.Doodle;
+ED.Restoration.prototype = new ED.ChartDoodle;
 ED.Restoration.prototype.constructor = ED.Restoration;
-ED.Restoration.superclass = ED.Doodle.prototype;
+ED.Restoration.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -68,29 +68,9 @@ ED.Restoration.prototype.setPropertyDefaults = function() {
  * Sets default parameters
  */
 ED.Restoration.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+	ED.Restoration.superclass.setParameterDefaults.call(this);
 
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
-
-	 // Register for notifications with drawing object to respond to clicks
+	// Register for notifications with drawing object to respond to clicks
     this.drawing.registerForNotifications(this, 'callBack', []);
 }
 

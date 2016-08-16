@@ -31,9 +31,9 @@ ED.Missing = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Missing.prototype = new ED.Doodle;
+ED.Missing.prototype = new ED.ChartDoodle;
 ED.Missing.prototype.constructor = ED.Missing;
-ED.Missing.superclass = ED.Doodle.prototype;
+ED.Missing.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets default dragging attributes
@@ -48,33 +48,6 @@ ED.Missing.prototype.setPropertyDefaults = function() {
 		type: 'bool',
 		display: true
 	};
-}
-
-/**
- * Sets default parameters
- */
-ED.Missing.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**

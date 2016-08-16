@@ -2004,7 +2004,11 @@ ED.Drawing.prototype.addDoodle = function(_className, _parameterDefaults, _param
 
 	// Check if one is already there if unique)
 	if (!(newDoodle.isUnique && this.hasDoodleOfClass(_className))) {
-		// Ensure no other doodles are selected, and run onDeselection code if appropriate
+		if (!newDoodle.canAdd) {
+			// don't add the doodle to the drawing
+			return null;
+		}
+ 		// Ensure no other doodles are selected, and run onDeselection code if appropriate
 		for (var i = 0; i < this.doodleArray.length; i++) {
 			if (this.doodleArray[i].isSelected) this.doodleArray[i].onDeselection();
 			this.doodleArray[i].isSelected = false;

@@ -110,6 +110,7 @@ ED.Doodle = function(_drawing, _parameterJSON) {
 		this.snapToArc = false;
 		this.willReport = true;
 		this.willSync = true;
+		this.canAdd = true;
 
 		// Calculate maximum range of origin:
 		var halfWidth = Math.round(this.drawing.doodlePlaneWidth / 2);

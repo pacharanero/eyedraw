@@ -2264,7 +2264,11 @@ ED.Drawing.prototype.addDoodle = function(_className, _parameterDefaults, _param
 
 	// Check if one is already there if unique)
 	if (!(newDoodle.isUnique && this.hasDoodleOfClass(_className))) {
-		// Ensure no other doodles are selected, and run onDeselection code if appropriate
+		if (!newDoodle.canAdd) {
+			// don't add the doodle to the drawing
+			return null;
+		}
+ 		// Ensure no other doodles are selected, and run onDeselection code if appropriate
 		for (var i = 0; i < this.doodleArray.length; i++) {
 			if (this.doodleArray[i].isSelected) this.doodleArray[i].onDeselection();
 			this.doodleArray[i].isSelected = false;
@@ -3327,6 +3331,7 @@ ED.Doodle = function(_drawing, _parameterJSON) {
 		this.snapToArc = false;
 		this.willReport = true;
 		this.willSync = true;
+		this.canAdd = true;
 
 		// Calculate maximum range of origin:
 		var halfWidth = Math.round(this.drawing.doodlePlaneWidth / 2);
@@ -12267,6 +12272,62 @@ ED.Wheeze.prototype.description = function() {
 	return 'wheeze' + lobe + lung;
 }
 /**
+ * ChartDoodle
+ *
+ * A parent class for use as the basis for any tooth chart doodles
+ *
+ * @class ChartDoodle
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Object} _parameterJSON
+ */
+
+ED.ChartDoodle = function(_drawing, _parameterJSON) {
+    // Call superclass constructor
+    ED.Doodle.call(this, _drawing, _parameterJSON);
+};
+
+ED.ChartDoodle.prototype = new ED.Doodle;
+ED.ChartDoodle.prototype.constructor = ED.ChartDoodle;
+ED.ChartDoodle.superclass = ED.Doodle.prototype;
+
+/**
+ * Abstraction to calculate the origin for the Doodle checking that a chart is present
+ * to draw on.
+ */
+ED.ChartDoodle.prototype.calculateChartBasedOrigin = function() {
+    var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+
+    // If there is a chart, interrogate box array to get position
+    if (chartDoodle) {
+        for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
+            if (!chartDoodle.boxArray[i].occupied) {
+                var newOriginX = chartDoodle.boxArray[i].point.x;
+                var newOriginY = chartDoodle.boxArray[i].point.y;
+                chartDoodle.boxArray[i].occupied = true;
+                this.toothNumber = chartDoodle.boxArray[i].number;
+                break;
+            }
+        }
+        if (!this.toothNumber) {
+            this.canAdd = false;
+        }
+    }
+    else {
+        var newOriginX = 0;
+        var newOriginY = -400;
+    }
+    this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
+    this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+}
+
+/**
+ * Sets default parameters
+ */
+ED.ChartDoodle.prototype.setParameterDefaults = function() {
+    this.calculateChartBasedOrigin();
+}
+/**
  * BridgePontic
  *
  * @class BridgePontic
@@ -12301,9 +12362,9 @@ ED.BridgePontic = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.BridgePontic.prototype = new ED.Doodle;
+ED.BridgePontic.prototype = new ED.ChartDoodle;
 ED.BridgePontic.prototype.constructor = ED.BridgePontic;
-ED.BridgePontic.superclass = ED.Doodle.prototype;
+ED.BridgePontic.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -12324,33 +12385,6 @@ ED.BridgePontic.prototype.setPropertyDefaults = function() {
 		list: ['Temporary', 'Porcelain', 'Metal'],
 		animate: false
 	};
-}
-
-/**
- * Sets default parameters
- */
-ED.BridgePontic.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
@@ -12453,9 +12487,9 @@ ED.BridgeRetainer = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.BridgeRetainer.prototype = new ED.Doodle;
+ED.BridgeRetainer.prototype = new ED.ChartDoodle;
 ED.BridgeRetainer.prototype.constructor = ED.BridgeRetainer;
-ED.BridgeRetainer.superclass = ED.Doodle.prototype;
+ED.BridgeRetainer.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -12476,33 +12510,6 @@ ED.BridgeRetainer.prototype.setPropertyDefaults = function() {
 		list: ['Temporary', 'Porcelain', 'Metal'],
 		animate: false
 	};
-}
-
-/**
- * Sets default parameters
- */
-ED.BridgeRetainer.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
@@ -12597,9 +12604,9 @@ ED.Canine = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Canine.prototype = new ED.Doodle;
+ED.Canine.prototype = new ED.ChartDoodle;
 ED.Canine.prototype.constructor = ED.Canine;
-ED.Canine.superclass = ED.Doodle.prototype;
+ED.Canine.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -12614,33 +12621,6 @@ ED.Canine.prototype.setHandles = function() {
 ED.Canine.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
-}
-
-/**
- * Sets default parameters
- */
-ED.Canine.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
@@ -12737,9 +12717,9 @@ ED.Caries = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Caries.prototype = new ED.Doodle;
+ED.Caries.prototype = new ED.ChartDoodle;
 ED.Caries.prototype.constructor = ED.Caries;
-ED.Caries.superclass = ED.Doodle.prototype;
+ED.Caries.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -12759,29 +12739,9 @@ ED.Caries.prototype.setPropertyDefaults = function() {
  * Sets default parameters
  */
 ED.Caries.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+	ED.Caries.superclass.setParameterDefaults.call(this);
 
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
-
-	 // Register for notifications with drawing object to respond to clicks
+	// Register for notifications with drawing object to respond to clicks
     this.drawing.registerForNotifications(this, 'callBack', []);
 }
 
@@ -13236,9 +13196,9 @@ ED.Crown = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Crown.prototype = new ED.Doodle;
+ED.Crown.prototype = new ED.ChartDoodle;
 ED.Crown.prototype.constructor = ED.Crown;
-ED.Crown.superclass = ED.Doodle.prototype;
+ED.Crown.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -13259,33 +13219,6 @@ ED.Crown.prototype.setPropertyDefaults = function() {
 		list: ['Temporary', 'Porcelain', 'Metal'],
 		animate: false
 	};
-}
-
-/**
- * Sets default parameters
- */
-ED.Crown.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
@@ -13413,9 +13346,9 @@ ED.DoubleRestoration = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.DoubleRestoration.prototype = new ED.Doodle;
+ED.DoubleRestoration.prototype = new ED.ChartDoodle;
 ED.DoubleRestoration.prototype.constructor = ED.DoubleRestoration;
-ED.DoubleRestoration.superclass = ED.Doodle.prototype;
+ED.DoubleRestoration.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -13442,27 +13375,7 @@ ED.DoubleRestoration.prototype.setPropertyDefaults = function() {
  * Sets default parameters
  */
 ED.DoubleRestoration.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
+	ED.DoubleRestoration.superclass.setParameterDefaults.call(this);
 
 	 // Register for notifications with drawing object to respond to clicks
     this.drawing.registerForNotifications(this, 'callBack', []);
@@ -13706,9 +13619,9 @@ ED.Extracted = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Extracted.prototype = new ED.Doodle;
+ED.Extracted.prototype = new ED.ChartDoodle;
 ED.Extracted.prototype.constructor = ED.Extracted;
-ED.Extracted.superclass = ED.Doodle.prototype;
+ED.Extracted.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -13730,33 +13643,6 @@ ED.Extracted.prototype.setPropertyDefaults = function() {
 		list: ['To be extracted', 'Extracted'],
 		animate: false
 	};
-}
-
-/**
- * Sets default parameters
- */
-ED.Extracted.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
@@ -13848,9 +13734,9 @@ ED.Fracture = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Fracture.prototype = new ED.Doodle;
+ED.Fracture.prototype = new ED.ChartDoodle;
 ED.Fracture.prototype.constructor = ED.Fracture;
-ED.Fracture.superclass = ED.Doodle.prototype;
+ED.Fracture.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -13865,33 +13751,6 @@ ED.Fracture.prototype.setHandles = function() {
 ED.Fracture.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
-}
-
-/**
- * Sets default parameters
- */
-ED.Fracture.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
@@ -13973,9 +13832,9 @@ ED.Implant = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Implant.prototype = new ED.Doodle;
+ED.Implant.prototype = new ED.ChartDoodle;
 ED.Implant.prototype.constructor = ED.Implant;
-ED.Implant.superclass = ED.Doodle.prototype;
+ED.Implant.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -13990,33 +13849,6 @@ ED.Implant.prototype.setHandles = function() {
 ED.Implant.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
-}
-
-/**
- * Sets default parameters
- */
-ED.Implant.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
@@ -14112,9 +13944,9 @@ ED.Missing = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Missing.prototype = new ED.Doodle;
+ED.Missing.prototype = new ED.ChartDoodle;
 ED.Missing.prototype.constructor = ED.Missing;
-ED.Missing.superclass = ED.Doodle.prototype;
+ED.Missing.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets default dragging attributes
@@ -14129,33 +13961,6 @@ ED.Missing.prototype.setPropertyDefaults = function() {
 		type: 'bool',
 		display: true
 	};
-}
-
-/**
- * Sets default parameters
- */
-ED.Missing.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
@@ -14255,9 +14060,9 @@ ED.Normal = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Normal.prototype = new ED.Doodle;
+ED.Normal.prototype = new ED.ChartDoodle;
 ED.Normal.prototype.constructor = ED.Normal;
-ED.Normal.superclass = ED.Doodle.prototype;
+ED.Normal.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets default dragging attributes
@@ -14266,32 +14071,6 @@ ED.Normal.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
 	this.willReport = false;
-}
-
-/**
- * Sets default parameters
- */
-ED.Normal.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
@@ -14371,9 +14150,9 @@ ED.Restoration = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Restoration.prototype = new ED.Doodle;
+ED.Restoration.prototype = new ED.ChartDoodle;
 ED.Restoration.prototype.constructor = ED.Restoration;
-ED.Restoration.superclass = ED.Doodle.prototype;
+ED.Restoration.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -14400,29 +14179,9 @@ ED.Restoration.prototype.setPropertyDefaults = function() {
  * Sets default parameters
  */
 ED.Restoration.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+	ED.Restoration.superclass.setParameterDefaults.call(this);
 
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
-
-	 // Register for notifications with drawing object to respond to clicks
+	// Register for notifications with drawing object to respond to clicks
     this.drawing.registerForNotifications(this, 'callBack', []);
 }
 
@@ -14652,9 +14411,9 @@ ED.Rotation = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Rotation.prototype = new ED.Doodle;
+ED.Rotation.prototype = new ED.ChartDoodle;
 ED.Rotation.prototype.constructor = ED.Rotation;
-ED.Rotation.superclass = ED.Doodle.prototype;
+ED.Rotation.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -14669,33 +14428,6 @@ ED.Rotation.prototype.setHandles = function() {
 ED.Rotation.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
-}
-
-/**
- * Sets default parameters
- */
-ED.Rotation.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
@@ -14802,9 +14534,9 @@ ED.SurfaceLoss = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.SurfaceLoss.prototype = new ED.Doodle;
+ED.SurfaceLoss.prototype = new ED.ChartDoodle;
 ED.SurfaceLoss.prototype.constructor = ED.SurfaceLoss;
-ED.SurfaceLoss.superclass = ED.Doodle.prototype;
+ED.SurfaceLoss.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -14825,33 +14557,6 @@ ED.SurfaceLoss.prototype.setPropertyDefaults = function() {
 		list: ['Temporary', 'Porcelain', 'Metal'],
 		animate: false
 	};
-}
-
-/**
- * Sets default parameters
- */
-ED.SurfaceLoss.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**

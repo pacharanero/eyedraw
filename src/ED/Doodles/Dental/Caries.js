@@ -32,9 +32,9 @@ ED.Caries = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Caries.prototype = new ED.Doodle;
+ED.Caries.prototype = new ED.ChartDoodle;
 ED.Caries.prototype.constructor = ED.Caries;
-ED.Caries.superclass = ED.Doodle.prototype;
+ED.Caries.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -54,29 +54,9 @@ ED.Caries.prototype.setPropertyDefaults = function() {
  * Sets default parameters
  */
 ED.Caries.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
+	ED.Caries.superclass.setParameterDefaults.call(this);
 
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
-
-	 // Register for notifications with drawing object to respond to clicks
+	// Register for notifications with drawing object to respond to clicks
     this.drawing.registerForNotifications(this, 'callBack', []);
 }
 

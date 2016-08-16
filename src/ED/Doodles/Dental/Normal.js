@@ -24,9 +24,9 @@ ED.Normal = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Normal.prototype = new ED.Doodle;
+ED.Normal.prototype = new ED.ChartDoodle;
 ED.Normal.prototype.constructor = ED.Normal;
-ED.Normal.superclass = ED.Doodle.prototype;
+ED.Normal.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets default dragging attributes
@@ -35,32 +35,6 @@ ED.Normal.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
 	this.willReport = false;
-}
-
-/**
- * Sets default parameters
- */
-ED.Normal.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**

@@ -25,9 +25,9 @@ ED.Canine = function(_drawing, _parameterJSON) {
 /**
  * Sets superclass and constructor
  */
-ED.Canine.prototype = new ED.Doodle;
+ED.Canine.prototype = new ED.ChartDoodle;
 ED.Canine.prototype.constructor = ED.Canine;
-ED.Canine.superclass = ED.Doodle.prototype;
+ED.Canine.superclass = ED.ChartDoodle.prototype;
 
 /**
  * Sets handle attributes
@@ -42,33 +42,6 @@ ED.Canine.prototype.setHandles = function() {
 ED.Canine.prototype.setPropertyDefaults = function() {
 	this.isMoveable = false;
 	this.isRotatable = false;
-}
-
-/**
- * Sets default parameters
- */
-ED.Canine.prototype.setParameterDefaults = function() {
-	// Get last added doodle
-	var chartDoodle = this.drawing.lastDoodleOfClass('Chart');
-
-	// If there is a chart, interrogate box array to get position
-	if (chartDoodle) {
-		for (var i = 0; i < chartDoodle.boxArray.length; i ++ ) {
-			if (!chartDoodle.boxArray[i].occupied) {
-				var newOriginX = chartDoodle.boxArray[i].point.x;
-				var newOriginY = chartDoodle.boxArray[i].point.y;
-				chartDoodle.boxArray[i].occupied = true;
-				this.toothNumber = chartDoodle.boxArray[i].number;
-				break;
-			}
-		}
-	}
-	else {
-		var newOriginX = 0;
-		var newOriginY = -400;
-	}
-	this.originX = this.parameterValidationArray['originX']['range'].constrain(newOriginX);
-	this.originY = this.parameterValidationArray['originY']['range'].constrain(newOriginY);
 }
 
 /**
