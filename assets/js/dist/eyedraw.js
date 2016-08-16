@@ -13325,6 +13325,25 @@ ED.Crown.prototype.draw = function(_point) {
 		var textWidth = ctx.measureText(label).width;
 		ctx.fillStyle = "black"
 		ctx.fillText(label, - textWidth / 2, 22);
+
+		// Type Text
+		label = "";
+		switch (this.type) {
+			case 'Temporary':
+				label = "TEMP";
+				break;
+			case 'Porcelain':
+				label = "PORC";
+				break;
+			case 'Metal':
+				label = "MET";
+				break;
+		}
+		ctx.font = "32px sans-serif";
+		textWidth = ctx.measureText(label).width;
+		ctx.fillStyle = "black"
+		ctx.fillText(label, - textWidth / 2, - this.boxDimension/3);
+
 	}
 
 	// Return value indicating successful hittest
@@ -13603,13 +13622,13 @@ ED.DoubleRestoration.prototype.draw = function(_point) {
 				label = "TEMP";
 				break;
 			case 'Amalgam':
-				label = "Aml";
+				label = "AML";
 				break;
 			case 'GIC':
 				label = "GIC";
 				break;
 			case 'Composite':
-				label = "Com";
+				label = "COM";
 				break;
 		}
 		ctx.font = "32px sans-serif";
@@ -14554,13 +14573,13 @@ ED.Restoration.prototype.draw = function(_point) {
 				label = "TEMP";
 				break;
 			case 'Amalgam':
-				label = "Aml";
+				label = "AML";
 				break;
 			case 'GIC':
 				label = "GIC";
 				break;
 			case 'Composite':
-				label = "Com";
+				label = "COM";
 				break;
 		}
 		ctx.font = "32px sans-serif";

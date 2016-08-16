@@ -241,13 +241,13 @@ ED.Restoration.prototype.draw = function(_point) {
 				label = "TEMP";
 				break;
 			case 'Amalgam':
-				label = "Aml";
+				label = "AML";
 				break;
 			case 'GIC':
 				label = "GIC";
 				break;
 			case 'Composite':
-				label = "Com";
+				label = "COM";
 				break;
 		}
 		ctx.font = "32px sans-serif";
