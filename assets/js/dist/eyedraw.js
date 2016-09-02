@@ -19163,12 +19163,14 @@ ED.Conjunctivitis = function(_drawing, _parameterJSON) {
 
 	// Other parameters
 	this.type = 'Papillary';
+ 	this.mucopurulent = false;
+ 	this.hyperaemia = "+";
 
 	// Saved parameters
-	this.savedParameterArray = ['type'];
+	this.savedParameterArray = ['type', 'mucopurulent', 'hyperaemia'];
 
 	// Parameters in doodle control bar (parameter name: parameter label)
-	this.controlParameterArray = {'type':'Type'};
+	this.controlParameterArray = {'type':'Type', 'mucopurulent':'Mucopurulent', 'hyperaemia':'Hyperaemia'};
 
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _parameterJSON);
@@ -19192,6 +19194,17 @@ ED.Conjunctivitis.prototype.setPropertyDefaults = function() {
 		kind: 'other',
 		type: 'string',
 		list: ['Papillary', 'Follicular'],
+		animate: false
+	};
+	this.parameterValidationArray['mucopurulent'] = {
+		kind: 'derived',
+		type: 'bool',
+		display: true
+	};
+	this.parameterValidationArray['hyperaemia'] = {
+		kind: 'other',
+		type: 'string',
+		list: ['+', '++', '+++'],
 		animate: false
 	};
 }
@@ -19245,12 +19258,18 @@ ED.Conjunctivitis.prototype.draw = function(_point) {
 	ctx.fillStyle = ptrn;
 	ctx.strokeStyle = "pink";
 
+	if (this.hyperaemia == "+") ctx.filter = "opacity(10%)";
+	if (this.hyperaemia == "++") ctx.filter = "opacity(30%)";
+	if (this.hyperaemia == "+++") ctx.filter = "opacity(50%)";
+
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
 
 	// Other paths and drawing here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
 	}
+
+	ctx.filter = "none";
 
 	// Return value indicating successful hit test
 	return this.isClicked;
@@ -19262,7 +19281,13 @@ ED.Conjunctivitis.prototype.draw = function(_point) {
  * @returns {String} Description of doodle
  */
 ED.Conjunctivitis.prototype.description = function() {
-	return this.type + " conjunctivitis";
+	var returnValue = this.type + " conjunctivitis";
+
+	if (this.mucopurulent) returnValue += ", mucopurulent,";
+
+	returnValue += " with " + this.hyperaemia + " hyperaemia";
+
+	return returnValue;
 }
 /**
  * OpenEyes
