@@ -66,6 +66,7 @@ class DoodleInfo
 		"CNV" => "Choroidal new vessels",
 		"ConjunctivalFlap" => "Conjunctival flap",
 		"ConjunctivalSuture" => "Conjunctival suture",
+		"Conjunctivitis" => "Conjunctivitis",
 		"CornealAbrasion" => "Corneal abrasion",
 		"CornealErosion" => "Removal of corneal epithelium",
 		"CornealGraft" => "Corneal graft",
