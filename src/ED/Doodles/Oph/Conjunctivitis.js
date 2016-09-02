@@ -55,6 +55,8 @@ ED.Conjunctivitis.superclass = ED.Doodle.prototype;
  */
 ED.Conjunctivitis.prototype.setPropertyDefaults = function() {
 	this.isUnique = true;
+	this.isMoveable = false;
+	this.isRotatable = false;
 
 	// Add complete validation arrays for other parameters
 	this.parameterValidationArray['type'] = {
