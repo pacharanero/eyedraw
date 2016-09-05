@@ -19224,6 +19224,8 @@ ED.Conjunctivitis.superclass = ED.Doodle.prototype;
  */
 ED.Conjunctivitis.prototype.setPropertyDefaults = function() {
 	this.isUnique = true;
+	this.isMoveable = false;
+	this.isRotatable = false;
 
 	// Add complete validation arrays for other parameters
 	this.parameterValidationArray['type'] = {
@@ -22419,7 +22421,7 @@ ED.DendriticUlcer = function(_drawing, _parameterJSON) {
 
 	// Private parameters
 	this.numberOfHandles = 8;
-	this.initialRadius = 120;
+	this.initialRadius = 100;
 
 	// Saved parameters
 	this.savedParameterArray = ['originX', 'originY', 'apexX', 'apexY', 'rotation'];
@@ -22478,7 +22480,7 @@ ED.DendriticUlcer.prototype.setPropertyDefaults = function() {
  */
 ED.DendriticUlcer.prototype.setParameterDefaults = function() {
 	this.apexY = 50;
-	this.setOriginWithDisplacements(200, 150);
+	this.setOriginWithDisplacements(0, 150);
 
 	// Create a squiggle to store the handles points
 	var squiggle = new ED.Squiggle(this, new ED.Colour(100, 100, 100, 1), 4, true);
@@ -22557,15 +22559,6 @@ ED.DendriticUlcer.prototype.draw = function(_point) {
 
 	// Non boundary paths
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw) {
-// 		Drusen
-// 		p = new ED.Point(0,0);
-// 		fill = "yellow";
-// 		var dr = 4;
-// 		n = Math.abs(Math.floor((-this.apexY + 50) / 5));
-// 		for (var i = 0; i < n; i++) {
-// 			p.setWithPolars(this.initialRadius * 0.8 * ED.randomArray[i + 10], 2 * Math.PI * ED.randomArray[i + 100]);
-// 			this.drawSpot(ctx, p.x, p.y, dr * 2, fill);
-// 		}
 	}
 
 	// Coordinates of handles (in canvas plane)
