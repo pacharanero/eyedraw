@@ -80,6 +80,7 @@ class DoodleInfo
 		"Cryo" => "Cryotherapy scar",
 		"CutterPI" => "Cutter iridectomy",
 		"CystoidMacularOedema" => "Cystoid macular oedema",
+		"DendriticUlcer" => "Dendritic Ulcer",
 		"DiabeticNV" => "Diabetic new vessels",
 		"Dialysis" => "Dialysis",
 		"DiscHaemorrhage" => "Disc haemorrhage",
